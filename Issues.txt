@@ -1,0 +1,10 @@
+Prioriadades:
+* Xp dos itens de forja: Em andamento
+* Nome dos itens de forja: Em andamento
+* Adicionar handles:
+* Corrigir os handles de cada item: 
+*Adicionar itens lvl 80.
+
+
+sem muita Prioriadade:
+* Preco de vendor de forja:
