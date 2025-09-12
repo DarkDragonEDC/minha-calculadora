@@ -1,10 +1,26 @@
 Prioriadades:
-* Xp dos itens de forja: Em andamento
-* Nome dos itens de forja: Em andamento
-* Adicionar handles:
-* Corrigir os handles de cada item: 
-*Adicionar itens lvl 80.
+*(Nome, Level, Base Time e Skill Exp) de (Dungeon, Alchemy, Woodcraft, Cooking, Crafting e forging) -  Feito.
+* Adicionar handles - Feito. 
+* Nome dos itens de forja - Feito
+*Adicionar itens lvl 80. (forja - Feito)
+
+
+
+***forging - falta skill xp***
+
+
+
+
+
+*Adicionar itens lvl 80. ( leatherworking e tailoring)
 
 
 sem muita Prioriadade:
-* Preco de vendor de forja:
+* Preco de vendor:
+
+
+
+LUCAS:
+Prioriadades: 
+> requerimento
+> requetimento amount
