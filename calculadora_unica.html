@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de XP Multiprofissão</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
+        .container { max-width: 600px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
+        h1, h2 { text-align: center; color: #444; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+        button { width: 100%; padding: 10px; background-color: #5cb85c; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #4cae4c; }
+        #results { margin-top: 20px; border-top: 2px solid #eee; padding-top: 15px; }
+        .result-item { background: #e9e9e9; padding: 10px; border-radius: 4px; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora de XP</h1>
+        <div class="form-group">
+            <label for="profSelect">Escolha a Profissão:</label>
+            <select id="profSelect"></select>
+        </div>
+        <div class="form-group">
+            <label for="currentXp">Seu XP Atual:</label>
+            <input type="number" id="currentXp" value="0">
+        </div>
+        <div class="form-group">
+            <label for="targetLvl">Nível Desejado:</label>
+            <input type="number" id="targetLvl" value="1">
+        </div>
+        <div class="form-group">
+            <label for="itemSelect">Item a ser Feito:</label>
+            <select id="itemSelect"></select>
+        </div>
+        <button onclick="calculate()">Calcular</button>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        const allData = {
+          "forging": [
+            {"Name":"Iron Bar","Level":"1","Base Time":"20","Skill Exp":"1","Stat Exp":"1","Vendor Price":"5","Requirement 1":"Iron Ore","Requirement 1 Amount":"2"},
+            {"Name":"Iron Sword","Level":"1","Base Time":"120","Skill Exp":"9","Stat Exp":"4","Vendor Price":"56","Requirement 1":"Iron Bar","Requirement 1 Amount":"10","Requirement 2":"Basic Flux","Requirement 2 Amount":"2","Requirement 3":"Basic Handle","Requirement 3 Amount":"1"},
+            {"Name":"Steel Bar","Level":"10","Base Time":"25","Skill Exp":"2","Stat Exp":"1","Vendor Price":"10","Requirement 1":"Steel Ore","Requirement 1 Amount":"2"},
+            {"Name":"Steel Sword","Level":"10","Base Time":"160","Skill Exp":"18","Stat Exp":"9","Vendor Price":"112","Requirement 1":"Steel Bar","Requirement 1 Amount":"10","Requirement 2":"Quality Flux","Requirement 2 Amount":"4","Requirement 3":"Basic Handle","Requirement 3 Amount":"2"},
+            {"Name":"Silver Bar","Level":"20","Base Time":"35","Skill Exp":"4","Stat Exp":"2","Vendor Price":"19","Requirement 1":"Silver Ore","Requirement 1 Amount":"2"},
+            {"Name":"Silver Sword","Level":"20","Base Time":"240","Skill Exp":"32","Stat Exp":"16","Vendor Price":"195","Requirement 1":"Silver Bar","Requirement 1 Amount":"10","Requirement 2":"Quality Flux","Requirement 2 Amount":"6","Requirement 3":"Quality Handle","Requirement 3 Amount":"3"},
+            {"Name":"Gold Bar","Level":"30","Base Time":"45","Skill Exp":"7","Stat Exp":"3","Vendor Price":"31","Requirement 1":"Gold Ore","Requirement 1 Amount":"2"},
+            {"Name":"Gold Sword","Level":"30","Base Time":"320","Skill Exp":"56","Stat Exp":"28","Vendor Price":"320","Requirement 1":"Gold Bar","Requirement 1 Amount":"10","Requirement 2":"Advanced Flux","Requirement 2 Amount":"8","Requirement 3":"Advanced Handle","Requirement 3 Amount":"4"},
+            {"Name":"Platinum Bar","Level":"40","Base Time":"55","Skill Exp":"11","Stat Exp":"5","Vendor Price":"48","Requirement 1":"Platinum Ore","Requirement 1 Amount":"2"},
+            {"Name":"Platinum Sword","Level":"40","Base Time":"400","Skill Exp":"88","Stat Exp":"44","Vendor Price":"498","Requirement 1":"Platinum Bar","Requirement 1 Amount":"10","Requirement 2":"Advanced Flux","Requirement 2 Amount":"10","Requirement 3":"Advanced Handle","Requirement 3 Amount":"5"},
+            {"Name":"Titanium Bar","Level":"50","Base Time":"65","Skill Exp":"16","Stat Exp":"8","Vendor Price":"68","Requirement 1":"Titanium Ore","Requirement 1 Amount":"2"},
+            {"Name":"Titanium Sword","Level":"50","Base Time":"480","Skill Exp":"128","Stat Exp":"64","Vendor Price":"675","Requirement 1":"Titanium Bar","Requirement 1 Amount":"10","Requirement 2":"Exotic Flux","Requirement 2 Amount":"12","Requirement 3":"Exotic Handle","Requirement 3 Amount":"6"},
+            {"Name":"Obsidian Bar","Level":"60","Base Time":"75","Skill Exp":"22","Stat Exp":"11","Vendor Price":"91","Requirement 1":"Obsidian Ore","Requirement 1 Amount":"2"},
+            {"Name":"Obsidian Sword","Level":"60","Base Time":"560","Skill Exp":"198","Stat Exp":"99","Vendor Price":"1047","Requirement 1":"Obsidian Bar","Requirement 1 Amount":"10","Requirement 2":"Exotic Flux","Requirement 2 Amount":"14","Requirement 3":"Exotic Handle","Requirement 3 Amount":"7"},
+            {"Name":"Dwarven Bar","Level":"70","Base Time":"85","Skill Exp":"29","Stat Exp":"14","Vendor Price":"112","Requirement 1":"Dwarven Ore","Requirement 1 Amount":"2"},
+            {"Name":"Dwarven Sword","Level":"70","Base Time":"640","Skill Exp":"261","Stat Exp":"130","Vendor Price":"1347","Requirement 1":"Dwarven Bar","Requirement 1 Amount":"10","Requirement 2":"Exotic Flux","Requirement 2 Amount":"16","Requirement 3":"Exotic Handle","Requirement 3 Amount":"8"}
+          ],
+          "leatherworking": [
+            {"Name":"Basic Leather","Level":"1","Base Time":"15","Skill Exp":"1","Stat Exp":"1","Vendor Price":"4","Requirement 1":"Raw Hide","Requirement 1 Amount":"2","Requirement 2":"Basic Solution","Requirement 2 Amount":"1"},
+            {"Name":"Basic Boots","Level":"1","Base Time":"240","Skill Exp":"18","Stat Exp":"9","Vendor Price":"111","Requirement 1":"Basic Leather","Requirement 1 Amount":"20","Requirement 2":"Basic Thread","Requirement 2 Amount":"1","Requirement 3":"Basic Solution","Requirement 3 Amount":"4"},
+            {"Name":"Quality Leather","Level":"10","Base Time":"20","Skill Exp":"2","Stat Exp":"1","Vendor Price":"8","Requirement 1":"Raw Hide","Requirement 1 Amount":"2","Requirement 2":"Basic Solution","Requirement 2 Amount":"2"},
+            {"Name":"Quality Boots","Level":"10","Base Time":"320","Skill Exp":"36","Stat Exp":"18","Vendor Price":"224","Requirement 1":"Quality Leather","Requirement 1 Amount":"20","Requirement 2":"Basic Thread","Requirement 2 Amount":"2","Requirement 3":"Basic Solution","Requirement 3 Amount":"8"},
+            {"Name":"Advanced Leather","Level":"20","Base Time":"30","Skill Exp":"4","Stat Exp":"2","Vendor Price":"15","Requirement 1":"Raw Hide","Requirement 1 Amount":"2","Requirement 2":"Quality Solution","Requirement 2 Amount":"3"},
+            {"Name":"Advanced Boots","Level":"20","Base Time":"480","Skill Exp":"64","Stat Exp":"32","Vendor Price":"389","Requirement 1":"Advanced Leather","Requirement 1 Amount":"20","Requirement 2":"Quality Thread","Requirement 2 Amount":"3","Requirement 3":"Quality Solution","Requirement 3 Amount":"12"},
+            {"Name":"Exotic Leather","Level":"30","Base Time":"40","Skill Exp":"7","Stat Exp":"3","Vendor Price":"25","Requirement 1":"Raw Hide","Requirement 1 Amount":"2","Requirement 2":"Advanced Solution","Requirement 2 Amount":"4"},
+            {"Name":"Exotic Boots","Level":"30","Base Time":"640","Skill Exp":"112","Stat Exp":"56","Vendor Price":"641","Requirement 1":"Exotic Leather","Requirement 1 Amount":"20","Requirement 2":"Advanced Thread","Requirement 2 Amount":"4","Requirement 3":"Advanced Solution","Requirement 3 Amount":"16"},
+            {"Name":"Mystic Leather","Level":"40","Base Time":"50","Skill Exp":"11","Stat Exp":"5","Vendor Price":"38","Requirement 1":"Raw Hide","Requirement 1 Amount":"2","Requirement 2":"Advanced Solution","Requirement 2 Amount":"5"},
+            {"Name":"Mystic Boots","Level":"40","Base Time":"800","Skill Exp":"176","Stat Exp":"88","Vendor Price":"994","Requirement 1":"Mystic Leather","Requirement 1 Amount":"20","Requirement 2":"Advanced Thread","Requirement 2 Amount":"5","Requirement 3":"Advanced Solution","Requirement 3 Amount":"20"},
+            {"Name":"Arcane Leather","Level":"50","Base Time":"60","Skill Exp":"16","Stat Exp":"8","Vendor Price":"54","Requirement 1":"Raw Hide","Requirement 1 Amount":"2","Requirement 2":"Exotic Solution","Requirement 2 Amount":"6"},
+            {"Name":"Arcane Boots","Level":"50","Base Time":"960","Skill Exp":"256","Stat Exp":"128","Vendor Price":"1351","Requirement 1":"Arcane Leather","Requirement 1 Amount":"20","Requirement 2":"Exotic Thread","Requirement 2 Amount":"6","Requirement 3":"Exotic Solution","Requirement 3 Amount":"24"},
+            {"Name":"Aether Leather","Level":"60","Base Time":"70","Skill Exp":"22","Stat Exp":"11","Vendor Price":"73","Requirement 1":"Raw Hide","Requirement 1 Amount":"2","Requirement 2":"Exotic Solution","Requirement 2 Amount":"7"},
+            {"Name":"Aether Boots","Level":"60","Base Time":"1120","Skill Exp":"396","Stat Exp":"198","Vendor Price":"2087","Requirement 1":"Aether Leather","Requirement 1 Amount":"20","Requirement 2":"Exotic Thread","Requirement 2 Amount":"7","Requirement 3":"Exotic Solution","Requirement 3 Amount":"28"},
+            {"Name":"Luminite Leather","Level":"70","Base Time":"80","Skill Exp":"29","Stat Exp":"14","Vendor Price":"95","Requirement 1":"Raw Hide","Requirement 1 Amount":"2","Requirement 2":"Exotic Solution","Requirement 2 Amount":"8"},
+            {"Name":"Luminite Boots","Level":"70","Base Time":"1280","Skill Exp":"522","Stat Exp":"261","Vendor Price":"2686","Requirement 1":"Luminite Leather","Requirement 1 Amount":"20","Requirement 2":"Exotic Thread","Requirement 2 Amount":"8","Requirement 3":"Exotic Solution","Requirement 3 Amount":"32"}
+          ],
+          "tailoring": [
+            {"Name":"Wool Cloth","Level":"1","Base Time":"15","Skill Exp":"1","Stat Exp":"1","Vendor Price":"4","Requirement 1":"Wool","Requirement 1 Amount":"2","Requirement 2":"Basic Thread","Requirement 2 Amount":"1"},
+            {"Name":"Wool Robe","Level":"1","Base Time":"240","Skill Exp":"18","Stat Exp":"9","Vendor Price":"111","Requirement 1":"Wool Cloth","Requirement 1 Amount":"20","Requirement 2":"Basic Thread","Requirement 2 Amount":"1","Requirement 3":"Basic Solution","Requirement 3 Amount":"4"},
+            {"Name":"Wool Hat","Level":"1","Base Time":"240","Skill Exp":"18","Stat Exp":"9","Vendor Price":"111","Requirement 1":"Wool Cloth","Requirement 1 Amount":"20","Requirement 2":"Basic Thread","Requirement 2 Amount":"1","Requirement 3":"Basic Solution","Requirement 3 Amount":"4"},
+            {"Name":"Wool Gloves","Level":"1","Base Time":"240","Skill Exp":"18","Stat Exp":"9","Vendor Price":"111","Requirement 1":"Wool Cloth","Requirement 1 Amount":"20","Requirement 2":"Basic Thread","Requirement 2 Amount":"1","Requirement 3":"Basic Solution","Requirement 3 Amount":"4"},
+            {"Name":"Wool Boots","Level":"1","Base Time":"240","Skill Exp":"18","Stat Exp":"9","Vendor Price":"111","Requirement 1":"Wool Cloth","Requirement 1 Amount":"20","Requirement 2":"Basic Thread","Requirement 2 Amount":"1","Requirement 3":"Basic Solution","Requirement 3 Amount":"4"},
+            {"Name":"Wool Pants","Level":"1","Base Time":"240","Skill Exp":"18","Stat Exp":"9","Vendor Price":"111","Requirement 1":"Wool Cloth","Requirement 1 Amount":"20","Requirement 2":"Basic Thread","Requirement 2 Amount":"1","Requirement 3":"Basic Solution","Requirement 3 Amount":"4"},
+            {"Name":"Silk Cloth","Level":"10","Base Time":"20","Skill Exp":"2","Stat Exp":"1","Vendor Price":"8","Requirement 1":"Silk","Requirement 1 Amount":"2","Requirement 2":"Basic Thread","Requirement 2 Amount":"2"},
+            {"Name":"Silk Robe","Level":"10","Base Time":"320","Skill Exp":"36","Stat Exp":"18","Vendor Price":"224","Requirement 1":"Silk Cloth","Requirement 1 Amount":"20","Requirement 2":"Basic Thread","Requirement 2 Amount":"2","Requirement 3":"Basic Solution","Requirement 3 Amount":"8"},
+            {"Name":"Silk Hat","Level":"10","Base Time":"320","Skill Exp":"36","Stat Exp":"18","Vendor Price":"224","Requirement 1":"Silk Cloth","Requirement 1 Amount":"20","Requirement 2":"Basic Thread","Requirement 2 Amount":"2","Requirement 3":"Basic Solution","Requirement 3 Amount":"8"},
+            {"Name":"Silk Gloves","Level":"10","Base Time":"320","Skill Exp":"36","Stat Exp":"18","Vendor Price":"224","Requirement 1":"Silk Cloth","Requirement 1 Amount":"20","Requirement 2":"Basic Thread","Requirement 2 Amount":"2","Requirement 3":"Basic Solution","Requirement 3 Amount":"8"},
+            {"Name":"Silk Boots","Level":"10","Base Time":"320","Skill Exp":"36","Stat Exp":"18","Vendor Price":"224","Requirement 1":"Silk Cloth","Requirement 1 Amount":"20","Requirement 2":"Basic Thread","Requirement 2 Amount":"2","Requirement 3":"Basic Solution","Requirement 3 Amount":"8"},
+            {"Name":"Silk Pants","Level":"10","Base Time":"320","Skill Exp":"36","Stat Exp":"18","Vendor Price":"224","Requirement 1":"Silk Cloth","Requirement 1 Amount":"20","Requirement 2":"Basic Thread","Requirement 2 Amount":"2","Requirement 3":"Basic Solution","Requirement 3 Amount":"8"},
+            {"Name":"Linen Cloth","Level":"20","Base Time":"30","Skill Exp":"4","Stat Exp":"2","Vendor Price":"15","Requirement 1":"Flax","Requirement 1 Amount":"2","Requirement 2":"Quality Thread","Requirement 2 Amount":"3"},
+            {"Name":"Linen Robe","Level":"20","Base Time":"480","Skill Exp":"64","Stat Exp":"32","Vendor Price":"389","Requirement 1":"Linen Cloth","Requirement 1 Amount":"20","Requirement 2":"Quality Thread","Requirement 2 Amount":"3","Requirement 3":"Quality Solution","Requirement 3 Amount":"12"},
+            {"Name":"Linen Hat","Level":"20","Base Time":"480","Skill Exp":"64","Stat Exp":"32","Vendor Price":"389","Requirement 1":"Linen Cloth","Requirement 1 Amount":"20","Requirement 2":"Quality Thread","Requirement 2 Amount":"3","Requirement 3":"Quality Solution","Requirement 3 Amount":"12"},
+            {"Name":"Linen Gloves","Level":"20","Base Time":"480","Skill Exp":"64","Stat Exp":"32","Vendor Price":"389","Requirement 1":"Linen Cloth","Requirement 1 Amount":"20","Requirement 2":"Quality Thread","Requirement 2 Amount":"3","Requirement 3":"Quality Solution","Requirement 3 Amount":"12"},
+            {"Name":"Linen Boots","Level":"20","Base Time":"480","Skill Exp":"64","Stat Exp":"32","Vendor Price":"389","Requirement 1":"Linen Cloth","Requirement 1 Amount":"20","Requirement 2":"Quality Thread","Requirement 2 Amount":"3","Requirement 3":"Quality Solution","Requirement 3 Amount":"12"},
+            {"Name":"Linen Pants","Level":"20","Base Time":"480","Skill Exp":"64","Stat Exp":"32","Vendor Price":"389","Requirement 1":"Linen Cloth","Requirement 1 Amount":"20","Requirement 2":"Quality Thread","Requirement 2 Amount":"3","Requirement 3":"Quality Solution","Requirement 3 Amount":"12"},
+            {"Name":"Cotton Cloth","Level":"30","Base Time":"40","Skill Exp":"7","Stat Exp":"3","Vendor Price":"25","Requirement 1":"Cotton","Requirement 1 Amount":"2","Requirement 2":"Advanced Thread","Requirement 2 Amount":"4"},
+            {"Name":"Cotton Robe","Level":"30","Base Time":"640","Skill Exp":"112","Stat Exp":"56","Vendor Price":"641","Requirement 1":"Cotton Cloth","Requirement 1 Amount":"20","Requirement 2":"Advanced Thread","Requirement 2 Amount":"4","Requirement 3":"Advanced Solution","Requirement 3 Amount":"16"},
+            {"Name":"Cotton Hat","Level":"30","Base Time":"640","Skill Exp":"112","Stat Exp":"56","Vendor Price":"641","Requirement 1":"Cotton Cloth","Requirement 1 Amount":"20","Requirement 2":"Advanced Thread","Requirement 2 Amount":"4","Requirement 3":"Advanced Solution","Requirement 3 Amount":"16"},
+            {"Name":"Cotton Gloves","Level":"30","Base Time":"640","Skill Exp":"112","Stat Exp":"56","Vendor Price":"641","Requirement 1":"Cotton Cloth","Requirement 1 Amount":"20","Requirement 2":"Advanced Thread","Requirement 2 Amount":"4","Requirement 3":"Advanced Solution","Requirement 3 Amount":"16"},
+            {"Name":"Cotton Boots","Level":"30","Base Time":"640","Skill Exp":"112","Stat Exp":"56","Vendor Price":"641","Requirement 1":"Cotton Cloth","Requirement 1 Amount":"20","Requirement 2":"Advanced Thread","Requirement 2 Amount":"4","Requirement 3":"Advanced Solution","Requirement 3 Amount":"16"},
+            {"Name":"Cotton Pants","Level":"30","Base Time":"640","Skill Exp":"112","Stat Exp":"56","Vendor Price":"641","Requirement 1":"Cotton Cloth","Requirement 1 Amount":"20","Requirement 2":"Advanced Thread","Requirement 2 Amount":"4","Requirement 3":"Advanced Solution","Requirement 3 Amount":"16"},
+            {"Name":"Mystic Cloth","Level":"40","Base Time":"50","Skill Exp":"11","Stat Exp":"5","Vendor Price":"38","Requirement 1":"Mystic Fibers","Requirement 1 Amount":"2","Requirement 2":"Advanced Thread","Requirement 2 Amount":"5"},
+            {"Name":"Mystic Robe","Level":"40","Base Time":"800","Skill Exp":"176","Stat Exp":"88","Vendor Price":"994","Requirement 1":"Mystic Cloth","Requirement 1 Amount":"20","Requirement 2":"Advanced Thread","Requirement 2 Amount":"5","Requirement 3":"Advanced Solution","Requirement 3 Amount":"20"},
+            {"Name":"Mystic Hat","Level":"40","Base Time":"800","Skill Exp":"176","Stat Exp":"88","Vendor Price":"994","Requirement 1":"Mystic Cloth","Requirement 1 Amount":"20","Requirement 2":"Advanced Thread","Requirement 2 Amount":"5","Requirement 3":"Advanced Solution","Requirement 3 Amount":"20"},
+            {"Name":"Mystic Gloves","Level":"40","Base Time":"800","Skill Exp":"176","Stat Exp":"88","Vendor Price":"994","Requirement 1":"Mystic Cloth","Requirement 1 Amount":"20","Requirement 2":"Advanced Thread","Requirement 2 Amount":"5","Requirement 3":"Advanced Solution","Requirement 3 Amount":"20"},
+            {"Name":"Mystic Boots","Level":"40","Base Time":"800","Skill Exp":"176","Stat Exp":"88","Vendor Price":"994","Requirement 1":"Mystic Cloth","Requirement 1 Amount":"20","Requirement 2":"Advanced Thread","Requirement 2 Amount":"5","Requirement 3":"Advanced Solution","Requirement 3 Amount":"20"},
+            {"Name":"Mystic Pants","Level":"40","Base Time":"800","Skill Exp":"176","Stat Exp":"88","Vendor Price":"994","Requirement 1":"Mystic Cloth","Requirement 1 Amount":"20","Requirement 2":"Advanced Thread","Requirement 2 Amount":"5","Requirement 3":"Advanced Solution","Requirement 3 Amount":"20"},
+            {"Name":"Arcane Cloth","Level":"50","Base Time":"60","Skill Exp":"16","Stat Exp":"8","Vendor Price":"54","Requirement 1":"Arcane Fibers","Requirement 1 Amount":"2","Requirement 2":"Exotic Thread","Requirement 2 Amount":"6"},
+            {"Name":"Arcane Robe","Level":"50","Base Time":"960","Skill Exp":"256","Stat Exp":"128","Vendor Price":"1351","Requirement 1":"Arcane Cloth","Requirement 1 Amount":"20","Requirement 2":"Exotic Thread","Requirement 2 Amount":"6","Requirement 3":"Exotic Solution","Requirement 3 Amount":"24"},
+            {"Name":"Arcane Hat","Level":"50","Base Time":"960","Skill Exp":"256","Stat Exp":"128","Vendor Price":"1351","Requirement 1":"Arcane Cloth","Requirement 1 Amount":"20","Requirement 2":"Exotic Thread","Requirement 2 Amount":"6","Requirement 3":"Exotic Solution","Requirement 3 Amount":"24"},
+            {"Name":"Arcane Gloves","Level":"50","Base Time":"960","Skill Exp":"256","Stat Exp":"128","Vendor Price":"1351","Requirement 1":"Arcane Cloth","Requirement 1 Amount":"20","Requirement 2":"Exotic Thread","Requirement 2 Amount":"6","Requirement 3":"Exotic Solution","Requirement 3 Amount":"24"},
+            {"Name":"Arcane Boots","Level":"50","Base Time":"960","Skill Exp":"256","Stat Exp":"128","Vendor Price":"1351","Requirement 1":"Arcane Cloth","Requirement 1 Amount":"20","Requirement 2":"Exotic Thread","Requirement 2 Amount":"6","Requirement 3":"Exotic Solution","Requirement 3 Amount":"24"},
+            {"Name":"Arcane Pants","Level":"50","Base Time":"960","Skill Exp":"256","Stat Exp":"128","Vendor Price":"1351","Requirement 1":"Arcane Cloth","Requirement 1 Amount":"20","Requirement 2":"Exotic Thread","Requirement 2 Amount":"6","Requirement 3":"Exotic Solution","Requirement 3 Amount":"24"},
+            {"Name":"Aether Cloth","Level":"60","Base Time":"70","Skill Exp":"22","Stat Exp":"11","Vendor Price":"73","Requirement 1":"Aether Fibers","Requirement 1 Amount":"2","Requirement 2":"Exotic Thread","Requirement 2 Amount":"7"},
+            {"Name":"Aether Robe","Level":"60","Base Time":"1120","Skill Exp":"396","Stat Exp":"198","Vendor Price":"2087","Requirement 1":"Aether Cloth","Requirement 1 Amount":"20","Requirement 2":"Exotic Thread","Requirement 2 Amount":"7","Requirement 3":"Exotic Solution","Requirement 3 Amount":"28"},
+            {"Name":"Aether Hat","Level":"60","Base Time":"1120","Skill Exp":"396","Stat Exp":"198","Vendor Price":"2087","Requirement 1":"Aether Cloth","Requirement 1 Amount":"20","Requirement 2":"Exotic Thread","Requirement 2 Amount":"7","Requirement 3":"Exotic Solution","Requirement 3 Amount":"28"},
+            {"Name":"Aether Gloves","Level":"60","Base Time":"1120","Skill Exp":"396","Stat Exp":"198","Vendor Price":"2087","Requirement 1":"Aether Cloth","Requirement 1 Amount":"20","Requirement 2":"Exotic Thread","Requirement 2 Amount":"7","Requirement 3":"Exotic Solution","Requirement 3 Amount":"28"},
+            {"Name":"Aether Boots","Level":"60","Base Time":"1120","Skill Exp":"396","Stat Exp":"198","Vendor Price":"2087","Requirement 1":"Aether Cloth","Requirement 1 Amount":"20","Requirement 2":"Exotic Thread","Requirement 2 Amount":"7","Requirement 3":"Exotic Solution","Requirement 3 Amount":"28"},
+            {"Name":"Aether Pants","Level":"60","Base Time":"1120","Skill Exp":"396","Stat Exp":"198","Vendor Price":"2087","Requirement 1":"Aether Cloth","Requirement 1 Amount":"20","Requirement 2":"Exotic Thread","Requirement 2 Amount":"7","Requirement 3":"Exotic Solution","Requirement 3 Amount":"28"},
+            {"Name":"Luminite Cloth","Level":"70","Base Time":"80","Skill Exp":"29","Stat Exp":"14","Vendor Price":"95","Requirement 1":"Luminite Fibers","Requirement 1 Amount":"2","Requirement 2":"Exotic Thread","Requirement 2 Amount":"8"},
+            {"Name":"Luminite Robe","Level":"70","Base Time":"1280","Skill Exp":"522","Stat Exp":"261","Vendor Price":"2686","Requirement 1":"Luminite Cloth","Requirement 1 Amount":"20","Requirement 2":"Exotic Thread","Requirement 2 Amount":"8","Requirement 3":"Exotic Solution","Requirement 3 Amount":"32"},
+            {"Name":"Luminite Hat","Level":"70","Base Time":"1280","Skill Exp":"522","Stat Exp":"261","Vendor Price":"2686","Requirement 1":"Luminite Cloth","Requirement 1 Amount":"20","Requirement 2":"Exotic Thread","Requirement 2 Amount":"8","Requirement 3":"Exotic Solution","Requirement 3 Amount":"32"},
+            {"Name":"Luminite Gloves","Level":"70","Base Time":"1280","Skill Exp":"522","Stat Exp":"261","Vendor Price":"2686","Requirement 1":"Luminite Cloth","Requirement 1 Amount":"20","Requirement 2":"Exotic Thread","Requirement 2 Amount":"8","Requirement 3":"Exotic Solution","Requirement 3 Amount":"32"},
+            {"Name":"Luminite Boots","Level":"70","Base Time":"1280","Skill Exp":"522","Stat Exp":"261","Vendor Price":"2686","Requirement 1":"Luminite Cloth","Requirement 1 Amount":"20","Requirement 2":"Exotic Thread","Requirement 2 Amount":"8","Requirement 3":"Exotic Solution","Requirement 3 Amount":"32"},
+            {"Name":"Luminite Pants","Level":"70","Base Time":"1280","Skill Exp":"522","Stat Exp":"261","Vendor Price":"2686","Requirement 1":"Luminite Cloth","Requirement 1 Amount":"20","Requirement 2":"Exotic Thread","Requirement 2 Amount":"8","Requirement 3":"Exotic Solution","Requirement 3 Amount":"32"}
+          ],
+          "crafting": [
+            {"Name":"Basic Thread","Level":"1","Base Time":"15","Skill Exp":"1","Stat Exp":"1","Vendor Price":"4","Requirement 1":"Flax Fiber","Requirement 1 Amount":"2","Requirement 2":"Bone Charcoal","Requirement 2 Amount":"1"},
+            {"Name":"Basic Solution","Level":"1","Base Time":"15","Skill Exp":"1","Stat Exp":"1","Vendor Price":"4","Requirement 1":"Wood Ash","Requirement 1 Amount":"2","Requirement 2":"Basic Bottle","Requirement 2 Amount":"1"},
+            {"Name":"Basic Flux","Level":"1","Base Time":"15","Skill Exp":"1","Stat Exp":"1","Vendor Price":"4","Requirement 1":"Limestone","Requirement 1 Amount":"2","Requirement 2":"Basic Bottle","Requirement 2 Amount":"1"},
+            {"Name":"Quality Thread","Level":"10","Base Time":"20","Skill Exp":"2","Stat Exp":"1","Vendor Price":"8","Requirement 1":"Flax Fiber","Requirement 1 Amount":"2","Requirement 2":"Bone Charcoal","Requirement 2 Amount":"2"},
+            {"Name":"Quality Solution","Level":"10","Base Time":"20","Skill Exp":"2","Stat Exp":"1","Vendor Price":"8","Requirement 1":"Wood Ash","Requirement 1 Amount":"2","Requirement 2":"Basic Bottle","Requirement 2 Amount":"2"},
+            {"Name":"Quality Flux","Level":"10","Base Time":"20","Skill Exp":"2","Stat Exp":"1","Vendor Price":"8","Requirement 1":"Limestone","Requirement 1 Amount":"2","Requirement 2":"Basic Bottle","Requirement 2 Amount":"2"},
+            {"Name":"Advanced Thread","Level":"20","Base Time":"30","Skill Exp":"4","Stat Exp":"2","Vendor Price":"15","Requirement 1":"Flax Fiber","Requirement 1 Amount":"2","Requirement 2":"Bone Charcoal","Requirement 2 Amount":"3"},
+            {"Name":"Advanced Solution","Level":"20","Base Time":"30","Skill Exp":"4","Stat Exp":"2","Vendor Price":"15","Requirement 1":"Wood Ash","Requirement 1 Amount":"2","Requirement 2":"Quality Bottle","Requirement 2 Amount":"3"},
+            {"Name":"Advanced Flux","Level":"20","Base Time":"30","Skill Exp":"4","Stat Exp":"2","Vendor Price":"15","Requirement 1":"Limestone","Requirement 1 Amount":"2","Requirement 2":"Quality Bottle","Requirement 2 Amount":"3"},
+            {"Name":"Exotic Thread","Level":"30","Base Time":"40","Skill Exp":"7","Stat Exp":"3","Vendor Price":"25","Requirement 1":"Flax Fiber","Requirement 1 Amount":"2","Requirement 2":"Bone Charcoal","Requirement 2 Amount":"4"},
+            {"Name":"Exotic Solution","Level":"30","Base Time":"40","Skill Exp":"7","Stat Exp":"3","Vendor Price":"25","Requirement 1":"Wood Ash","Requirement 1 Amount":"2","Requirement 2":"Quality Bottle","Requirement 2 Amount":"4"},
+            {"Name":"Exotic Flux","Level":"30","Base Time":"40","Skill Exp":"7","Stat Exp":"3","Vendor Price":"25","Requirement 1":"Limestone","Requirement 1 Amount":"2","Requirement 2":"Quality Bottle","Requirement 2 Amount":"4"},
+            {"Name":"Mystic Thread","Level":"40","Base Time":"50","Skill Exp":"11","Stat Exp":"5","Vendor Price":"38","Requirement 1":"Flax Fiber","Requirement 1 Amount":"2","Requirement 2":"Bone Charcoal","Requirement 2 Amount":"5"},
+            {"Name":"Mystic Solution","Level":"40","Base Time":"50","Skill Exp":"11","Stat Exp":"5","Vendor Price":"38","Requirement 1":"Wood Ash","Requirement 1 Amount":"2","Requirement 2":"Advanced Bottle","Requirement 2 Amount":"5"},
+            {"Name":"Mystic Flux","Level":"40","Base Time":"50","Skill Exp":"11","Stat Exp":"5","Vendor Price":"38","Requirement 1":"Limestone","Requirement 1 Amount":"2","Requirement 2":"Advanced Bottle","Requirement 2 Amount":"5"},
+            {"Name":"Arcane Thread","Level":"50","Base Time":"60","Skill Exp":"16","Stat Exp":"8","Vendor Price":"54","Requirement 1":"Flax Fiber","Requirement 1 Amount":"2","Requirement 2":"Bone Charcoal","Requirement 2 Amount":"6"},
+            {"Name":"Arcane Solution","Level":"50","Base Time":"60","Skill Exp":"16","Stat Exp":"8","Vendor Price":"54","Requirement 1":"Wood Ash","Requirement 1 Amount":"2","Requirement 2":"Advanced Bottle","Requirement 2 Amount":"6"},
+            {"Name":"Arcane Flux","Level":"50","Base Time":"60","Skill Exp":"16","Stat Exp":"8","Vendor Price":"54","Requirement 1":"Limestone","Requirement 1 Amount":"2","Requirement 2":"Advanced Bottle","Requirement 2 Amount":"6"},
+            {"Name":"Aether Thread","Level":"60","Base Time":"70","Skill Exp":"22","Stat Exp":"11","Vendor Price":"73","Requirement 1":"Flax Fiber","Requirement 1 Amount":"2","Requirement 2":"Bone Charcoal","Requirement 2 Amount":"7"},
+            {"Name":"Aether Solution","Level":"60","Base Time":"70","Skill Exp":"22","Stat Exp":"11","Vendor Price":"73","Requirement 1":"Wood Ash","Requirement 1 Amount":"2","Requirement 2":"Exotic Bottle","Requirement 2 Amount":"7"},
+            {"Name":"Aether Flux","Level":"60","Base Time":"70","Skill Exp":"22","Stat Exp":"11","Vendor Price":"73","Requirement 1":"Limestone","Requirement 1 Amount":"2","Requirement 2":"Exotic Bottle","Requirement 2 Amount":"7"},
+            {"Name":"Luminite Thread","Level":"70","Base Time":"80","Skill Exp":"29","Stat Exp":"14","Vendor Price":"95","Requirement 1":"Flax Fiber","Requirement 1 Amount":"2","Requirement 2":"Bone Charcoal","Requirement 2 Amount":"8"},
+            {"Name":"Luminite Solution","Level":"70","Base Time":"80","Skill Exp":"29","Stat Exp":"14","Vendor Price":"95","Requirement 1":"Wood Ash","Requirement 1 Amount":"2","Requirement 2":"Exotic Bottle","Requirement 2 Amount":"8"},
+            {"Name":"Luminite Flux","Level":"70","Base Time":"80","Skill Exp":"29","Stat Exp":"14","Vendor Price":"95","Requirement 1":"Limestone","Requirement 1 Amount":"2","Requirement 2":"Exotic Bottle","Requirement 2 Amount":"8"}
+          ],
+          "cooking": [
+            {"Name":"Cooked Fish","Level":"1","Base Time":"20","Skill Exp":"1","Stat Exp":"1","Vendor Price":"5","Requirement 1":"Raw Fish","Requirement 1 Amount":"2"},
+            {"Name":"Basic Stew","Level":"1","Base Time":"120","Skill Exp":"9","Stat Exp":"4","Vendor Price":"56","Requirement 1":"Raw Fish","Requirement 1 Amount":"10","Requirement 2":"Basic Bottle","Requirement 2 Amount":"2","Requirement 3":"Fresh Meat","Requirement 3 Amount":"10"},
+            {"Name":"Steamed Clam","Level":"10","Base Time":"320","Skill Exp":"36","Stat Exp":"18","Vendor Price":"224","Requirement 1":"Clam Meat","Requirement 1 Amount":"20","Requirement 2":"Basic Bottle","Requirement 2 Amount":"8","Requirement 3":"Fresh Meat","Requirement 3 Amount":"20"},
+            {"Name":"Meat Stew","Level":"10","Base Time":"160","Skill Exp":"18","Stat Exp":"9","Vendor Price":"112","Requirement 1":"Fresh Meat","Requirement 1 Amount":"10","Requirement 2":"Basic Bottle","Requirement 2 Amount":"4","Requirement 3":"Raw Fish","Requirement 3 Amount":"10"},
+            {"Name":"Chicken Stew","Level":"20","Base Time":"480","Skill Exp":"64","Stat Exp":"32","Vendor Price":"389","Requirement 1":"Chicken Meat","Requirement 1 Amount":"20","Requirement 2":"Quality Bottle","Requirement 2 Amount":"12","Requirement 3":"Fresh Meat","Requirement 3 Amount":"20"},
+            {"Name":"Chicken and Seafood Stew","Level":"20","Base Time":"240","Skill Exp":"32","Stat Exp":"16","Vendor 1":"195","Requirement 1":"Chicken Meat","Requirement 1 Amount":"10","Requirement 2":"Quality Bottle","Requirement 2 Amount":"6","Requirement 3":"Clam Meat","Requirement 3 Amount":"10"},
+            {"Name":"Pork and Fish Stew","Level":"30","Base Time":"640","Skill Exp":"112","Stat Exp":"56","Vendor 1":"641","Requirement 1":"Pork Meat","Requirement 1 Amount":"20","Requirement 2":"Advanced Bottle","Requirement 2 Amount":"16","Requirement 3":"Fresh Fish","Requirement 3 Amount":"20"},
+            {"Name":"Pork and Seafood Stew","Level":"30","Base Time":"320","Skill Exp":"56","Stat Exp":"28","Vendor 1":"320","Requirement 1":"Pork Meat","Requirement 1 Amount":"10","Requirement 2":"Advanced Bottle","Requirement 2 Amount":"8","Requirement 3":"Clam Meat","Requirement 3 Amount":"10"},
+            {"Name":"Beef and Fish Stew","Level":"40","Base Time":"800","Skill Exp":"176","Stat Exp":"88","Vendor 1":"994","Requirement 1":"Beef Meat","Requirement 1 Amount":"20","Requirement 2":"Advanced Bottle","Requirement 2 Amount":"20","Requirement 3":"Fresh Fish","Requirement 3 Amount":"20"},
+            {"Name":"Beef and Pork Stew","Level":"40","Base Time":"400","Skill Exp":"88","Stat Exp":"44","Vendor 1":"498","Requirement 1":"Beef Meat","Requirement 1 Amount":"10","Requirement 2":"Advanced Bottle","Requirement 2 Amount":"10","Requirement 3":"Pork Meat","Requirement 3 Amount":"10"},
+            {"Name":"Boar and Fish Stew","Level":"50","Base Time":"960","Skill Exp":"256","Stat Exp":"128","Vendor 1":"1351","Requirement 1":"Boar Meat","Requirement 1 Amount":"20","Requirement 2":"Exotic Bottle","Requirement 2 Amount":"24","Requirement 3":"Giant Fish","Requirement 3 Amount":"20"},
+            {"Name":"Boar and Beef Stew","Level":"50","Base Time":"480","Skill Exp":"128","Stat Exp":"64","Vendor 1":"675","Requirement 1":"Boar Meat","Requirement 1 Amount":"10","Requirement 2":"Exotic Bottle","Requirement 2 Amount":"12","Requirement 3":"Beef Meat","Requirement 3 Amount":"10"},
+            {"Name":"Venison and Fish Stew","Level":"60","Base Time":"1120","Skill Exp":"396","Stat Exp":"198","Vendor 1":"2087","Requirement 1":"Venison Meat","Requirement 1 Amount":"20","Requirement 2":"Exotic Bottle","Requirement 2 Amount":"28","Requirement 3":"Giant Fish","Requirement 3 Amount":"20"},
+            {"Name":"Venison and Boar Stew","Level":"60","Base Time":"560","Skill Exp":"198","Stat Exp":"99","Vendor 1":"1047","Requirement 1":"Venison Meat","Requirement 1 Amount":"10","Requirement 2":"Exotic Bottle","Requirement 2 Amount":"14","Requirement 3":"Boar Meat","Requirement 3 Amount":"10"},
+            {"Name":"Aether Fish and Venison Stew","Level":"70","Base Time":"1280","Skill Exp":"522","Stat Exp":"261","Vendor 1":"2686","Requirement 1":"Aether Fish","Requirement 1 Amount":"20","Requirement 2":"Exotic Bottle","Requirement 2 Amount":"32","Requirement 3":"Venison Meat","Requirement 3 Amount":"20"},
+            {"Name":"Aether Fish and Boar Stew","Level":"70","Base Time":"640","Skill Exp":"261","Stat Exp":"130","Vendor 1":"1347","Requirement 1":"Aether Fish","Requirement 1 Amount":"10","Requirement 2":"Exotic Bottle","Requirement 2 Amount":"16","Requirement 3":"Boar Meat","Requirement 3 Amount":"10"}
+          ],
+          "woodcrafting": [
+            {"Name":"Wood Log","Level":"1","Base Time":"20","Skill Exp":"1","Stat Exp":"1","Vendor Price":"5","Requirement 1":"Wood","Requirement 1 Amount":"2","Requirement 2":"Basic Axe","Requirement 2 Amount":"1"},
+            {"Name":"Wool Bow","Level":"1","Base Time":"240","Skill Exp":"18","Stat Exp":"9","Vendor Price":"111","Requirement 1":"Wood Log","Requirement 1 Amount":"20","Requirement 2":"Basic Axe","Requirement 2 Amount":"1","Requirement 3":"Wool Bowstring","Requirement 3 Amount":"1"},
+            {"Name":"Oak Log","Level":"10","Base Time":"25","Skill Exp":"2","Stat Exp":"1","Vendor Price":"10","Requirement 1":"Oak Wood","Requirement 1 Amount":"2","Requirement 2":"Basic Axe","Requirement 2 Amount":"2"},
+            {"Name":"Silk Bow","Level":"10","Base Time":"320","Skill Exp":"36","Stat Exp":"18","Vendor Price":"224","Requirement 1":"Oak Log","Requirement 1 Amount":"20","Requirement 2":"Basic Axe","Requirement 2 Amount":"2","Requirement 3":"Silk Bowstring","Requirement 3 Amount":"1"},
+            {"Name":"Cedar Log","Level":"20","Base Time":"35","Skill Exp":"4","Stat Exp":"2","Vendor Price":"19","Requirement 1":"Cedar Wood","Requirement 1 Amount":"2","Requirement 2":"Quality Axe","Requirement 2 Amount":"3"},
+            {"Name":"Linen Bow","Level":"20","Base Time":"480","Skill Exp":"64","Stat Exp":"32","Vendor Price":"389","Requirement 1":"Cedar Log","Requirement 1 Amount":"20","Requirement 2":"Quality Axe","Requirement 2 Amount":"3","Requirement 3":"Linen Bowstring","Requirement 3 Amount":"1"},
+            {"Name":"Mahogany Log","Level":"30","Base Time":"45","Skill Exp":"7","Stat Exp":"3","Vendor Price":"31","Requirement 1":"Mahogany Wood","Requirement 1 Amount":"2","Requirement 2":"Advanced Axe","Requirement 2 Amount":"4"},
+            {"Name":"Cotton Bow","Level":"30","Base Time":"640","Skill Exp":"112","Stat Exp":"56","Vendor Price":"641","Requirement 1":"Mahogany Log","Requirement 1 Amount":"20","Requirement 2":"Advanced Axe","Requirement 2 Amount":"4","Requirement 3":"Cotton Bowstring","Requirement 3 Amount":"1"},
+            {"Name":"Ebony Log","Level":"40","Base Time":"55","Skill Exp":"11","Stat Exp":"5","Vendor Price":"48","Requirement 1":"Ebony Wood","Requirement 1 Amount":"2","Requirement 2":"Advanced Axe","Requirement 2 Amount":"5"},
+            {"Name":"Mystic Bow","Level":"40","Base Time":"800","Skill Exp":"176","Stat Exp":"88","Vendor Price":"994","Requirement 1":"Ebony Log","Requirement 1 Amount":"20","Requirement 2":"Advanced Axe","Requirement 2 Amount":"5","Requirement 3":"Mystic Bowstring","Requirement 3 Amount":"1"},
+            {"Name":"Ironwood Log","Level":"50","Base Time":"65","Skill Exp":"16","Stat Exp":"8","Vendor Price":"68","Requirement 1":"Ironwood","Requirement 1 Amount":"2","Requirement 2":"Exotic Axe","Requirement 2 Amount":"6"},
+            {"Name":"Arcane Bow","Level":"50","Base Time":"960","Skill Exp":"256","Stat Exp":"128","Vendor Price":"1351","Requirement 1":"Ironwood Log","Requirement 1 Amount":"20","Requirement 2":"Exotic Axe","Requirement 2 Amount":"6","Requirement 3":"Arcane Bowstring","Requirement 3 Amount":"1"},
+            {"Name":"Dragonwood Log","Level":"60","Base Time":"75","Skill Exp":"22","Stat Exp":"11","Vendor Price":"91","Requirement 1":"Dragonwood","Requirement 1 Amount":"2","Requirement 2":"Exotic Axe","Requirement 2 Amount":"7"},
+            {"Name":"Aether Bow","Level":"60","Base Time":"1120","Skill Exp":"396","Stat Exp":"198","Vendor Price":"2087","Requirement 1":"Dragonwood Log","Requirement 1 Amount":"20","Requirement 2":"Exotic Axe","Requirement 2 Amount":"7","Requirement 3":"Aether Bowstring","Requirement 3 Amount":"1"},
+            {"Name":"Elderwood Log","Level":"70","Base Time":"85","Skill Exp":"29","Stat Exp":"14","Vendor Price":"112","Requirement 1":"Elderwood","Requirement 1 Amount":"2","Requirement 2":"Exotic Axe","Requirement 2 Amount":"8"},
+            {"Name":"Luminite Bow","Level":"70","Base Time":"1280","Skill Exp":"522","Stat Exp":"261","Vendor Price":"2686","Requirement 1":"Elderwood Log","Requirement 1 Amount":"20","Requirement 2":"Exotic Axe","Requirement 2 Amount":"8","Requirement 3":"Luminite Bowstring","Requirement 3 Amount":"1"}
+          ],
+          "alchemy": [
+            {"Name":"Basic Antidote Potion","Level":"1","Base Time":"20","Skill Exp":"1","Stat Exp":"1","Vendor Price":"5","Requirement 1":"Basic Bottle","Requirement 1 Amount":"1","Requirement 2":"Antidote Herb","Requirement 2 Amount":"2"},
+            {"Name":"Basic Heal Potion","Level":"10","Base Time":"25","Skill Exp":"2","Stat Exp":"1","Vendor Price":"10","Requirement 1":"Basic Bottle","Requirement 1 Amount":"1","Requirement 2":"Heal Herb","Requirement 2 Amount":"2"},
+            {"Name":"Quality Antidote Potion","Level":"20","Base Time":"30","Skill Exp":"4","Stat Exp":"2","Vendor Price":"19","Requirement 1":"Quality Bottle","Requirement 1 Amount":"1","Requirement 2":"Antidote Herb","Requirement 2 Amount":"3"},
+            {"Name":"Quality Heal Potion","Level":"30","Base Time":"35","Skill Exp":"7","Stat Exp":"3","Vendor Price":"31","Requirement 1":"Quality Bottle","Requirement 1 Amount":"1","Requirement 2":"Heal Herb","Requirement 2 Amount":"3"},
+            {"Name":"Advanced Antidote Potion","Level":"40","Base Time":"40","Skill Exp":"11","Stat Exp":"5","Vendor Price":"48","Requirement 1":"Advanced Bottle","Requirement 1 Amount":"1","Requirement 2":"Antidote Herb","Requirement 2 Amount":"4"},
+            {"Name":"Advanced Heal Potion","Level":"50","Base Time":"45","Skill Exp":"16","Stat Exp":"8","Vendor Price":"68","Requirement 1":"Advanced Bottle","Requirement 1 Amount":"1","Requirement 2":"Heal Herb","Requirement 2 Amount":"4"},
+            {"Name":"Exotic Antidote Potion","Level":"60","Base Time":"50","Skill Exp":"22","Stat Exp":"11","Vendor Price":"91","Requirement 1":"Exotic Bottle","Requirement 1 Amount":"1","Requirement 2":"Antidote Herb","Requirement 2 Amount":"5"},
+            {"Name":"Exotic Heal Potion","Level":"70","Base Time":"55","Skill Exp":"29","Stat Exp":"14","Vendor Price":"112","Requirement 1":"Exotic Bottle","Requirement 1 Amount":"1","Requirement 2":"Heal Herb","Requirement 2 Amount":"5"}
+          ],
+          "dungeon": [
+            {"Name":"Basic Dungeon","Level":"1","Base Time":"300","Skill Exp":"100","Stat Exp":"50","Vendor Price":"500","Requirement 1":"Basic Key","Requirement 1 Amount":"1"},
+            {"Name":"Quality Dungeon","Level":"10","Base Time":"600","Skill Exp":"200","Stat Exp":"100","Vendor Price":"1000","Requirement 1":"Quality Key","Requirement 1 Amount":"1"},
+            {"Name":"Advanced Dungeon","Level":"20","Base Time":"1200","Skill Exp":"400","Stat Exp":"200","Vendor Price":"2000","Requirement 1":"Advanced Key","Requirement 1 Amount":"1"},
+            {"Name":"Exotic Dungeon","Level":"30","Base Time":"2400","Skill Exp":"800","Stat Exp":"400","Vendor Price":"4000","Requirement 1":"Exotic Key","Requirement 1 Amount":"1"},
+            {"Name":"Mythic Dungeon","Level":"40","Base Time":"4800","Skill Exp":"1600","Stat Exp":"800","Vendor Price":"8000","Requirement 1":"Mythic Key","Requirement 1 Amount":"1"},
+            {"Name":"Legendary Dungeon","Level":"50","Base Time":"9600","Skill Exp":"3200","Stat Exp":"1600","Vendor Price":"16000","Requirement 1":"Legendary Key","Requirement 1 Amount":"1"},
+            {"Name":"Godly Dungeon","Level":"60","Base Time":"19200","Skill Exp":"6400","Stat Exp":"3200","Vendor Price":"32000","Requirement 1":"Godly Key","Requirement 1 Amount":"1"},
+            {"Name":"Celestial Dungeon","Level":"70","Base Time":"38400","Skill Exp":"12800","Stat Exp":"6400","Vendor Price":"64000","Requirement 1":"Celestial Key","Requirement 1 Amount":"1"}
+          ]
+        };
+
+        const xpPerLevel = {
+          "1": 0, "2": 84, "3": 192, "4": 324, "5": 480, "6": 660, "7": 864, "8": 1092, "9": 1344, "10": 1620,
+          "11": 1920, "12": 2244, "13": 2592, "14": 2964, "15": 3360, "16": 3780, "17": 4224, "18": 4692, "19": 5184, "20": 5700,
+          "21": 6240, "22": 6804, "23": 7392, "24": 8004, "25": 8640, "26": 9300, "27": 9984, "28": 10692, "29": 11424, "30": 12180,
+          "31": 12960, "32": 13764, "33": 14592, "34": 15444, "35": 16320, "36": 17220, "37": 18144, "38": 19092, "39": 20064, "40": 21060,
+          "41": 22080, "42": 23124, "43": 24192, "44": 25284, "45": 26400, "46": 27540, "47": 28704, "48": 29892, "49": 31104, "50": 32340,
+          "51": 33600, "52": 34884, "53": 36192, "54": 37524, "55": 38880, "56": 40260, "57": 41664, "58": 43092, "59": 44544, "60": 46020,
+          "61": 47520, "62": 49044, "63": 50592, "64": 52164, "65": 53760, "66": 55380, "67": 57024, "68": 58692, "69": 60384, "70": 62100,
+          "71": 63840, "72": 65604, "73": 67392, "74": 69204, "75": 71040, "76": 72900, "77": 74784, "78": 76692, "79": 78624, "80": 80580,
+          "81": 82560, "82": 84564, "83": 86592, "84": 88644, "85": 90720, "86": 92820, "87": 94944, "88": 97092, "89": 99264, "90": 101460,
+          "91": 103680, "92": 105924, "93": 108192, "94": 110484, "95": 112800, "96": 115140, "97": 117504, "98": 119892, "99": 122304, "100": 124740
+        };
+
+        const professionNames = {
+            "forging": "Forja",
+            "leatherworking": "Leatherworking",
+            "tailoring": "Alfaiataria",
+            "crafting": "Criação",
+            "cooking": "Culinária",
+            "woodcrafting": "Marcenaria",
+            "alchemy": "Alquimia",
+            "dungeon": "Dungeon"
+        };
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const profSelect = document.getElementById('profSelect');
+            const itemSelect = document.getElementById('itemSelect');
+
+            // Populate the profession dropdown
+            for (const key in professionNames) {
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = professionNames[key];
+                profSelect.appendChild(option);
+            }
+
+            // Initial population of the item dropdown based on the first profession
+            updateItemSelect(profSelect.value);
+
+            // Add event listener to profession dropdown
+            profSelect.addEventListener('change', (event) => {
+                updateItemSelect(event.target.value);
+            });
+        });
+
+        function updateItemSelect(profKey) {
+            const itemSelect = document.getElementById('itemSelect');
+            itemSelect.innerHTML = ''; // Clear previous items
+            const data = allData[profKey];
+            if (data) {
+                data.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.Name;
+                    option.textContent = `${item.Name} (Lvl ${item.Level}, XP: ${item["Skill Exp"]})`;
+                    itemSelect.appendChild(option);
+                });
+            }
+        }
+        
+        function calculate() {
+            const currentXp = parseInt(document.getElementById('currentXp').value);
+            const targetLvl = parseInt(document.getElementById('targetLvl').value);
+            const selectedProfKey = document.getElementById('profSelect').value;
+            const selectedItemName = document.getElementById('itemSelect').value;
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+            
+            const targetXp = xpPerLevel[targetLvl.toString()];
+            if (currentXp >= targetXp) {
+                resultsDiv.innerHTML = `<p>Você já atingiu ou superou o nível desejado!</p>`;
+                return;
+            }
+            
+            const xpNeeded = targetXp - currentXp;
+            const currentProfData = allData[selectedProfKey];
+            const selectedItem = currentProfData.find(item => item.Name === selectedItemName);
+
+            if (!selectedItem || parseInt(selectedItem["Skill Exp"]) === 0) {
+                resultsDiv.innerHTML = `<p>Item selecionado não encontrado ou não concede XP.</p>`;
+                return;
+            }
+            
+            const itemXp = parseInt(selectedItem["Skill Exp"]);
+            const craftsNeeded = Math.ceil(xpNeeded / itemXp);
+            
+            let materials = {};
+            for (let i = 1; i <= 4; i++) {
+                const materialName = selectedItem[`Requirement ${i}`];
+                const materialAmount = selectedItem[`Requirement ${i} Amount`];
+                if (materialName && materialAmount) {
+                    materials[materialName] = (materials[materialName] || 0) + parseInt(materialAmount) * craftsNeeded;
+                }
+            }
+            
+            let resultHtml = `<h2>Resultados</h2><div class="result-item"><p><strong>XP Necessário:</strong> ${xpNeeded}</p><p><strong>Itens a serem feitos:</strong> ${craftsNeeded} x ${selectedItemName}</p></div><h3>Materiais Gastos</h3>`;
+            for (const mat in materials) {
+                resultHtml += `<div class="result-item"><p><strong>${mat}:</strong> ${materials[mat]}</p></div>`;
+            }
+            resultsDiv.innerHTML = resultHtml;
+        }
+    </script>
+</body>
+</html>
