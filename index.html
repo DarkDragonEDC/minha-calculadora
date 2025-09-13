@@ -43,6 +43,10 @@
             <input type="number" id="targetLvl" value="1">
         </div>
         <div class="form-group">
+            <label for="efficiency">Efficiency (%):</label>
+            <input type="number" id="efficiency" value="0" min="0">
+        </div>
+        <div class="form-group">
             <label for="itemSelect">Item:</label>
             <select id="itemSelect"></select>
         </div>
@@ -461,7 +465,12 @@
         }
 
         function formatTime(totalSeconds) {
+            if (totalSeconds < 0) totalSeconds = 0;
             let parts = [];
+            
+            // Arredondar para o segundo mais próximo para evitar casas decimais longas
+            totalSeconds = Math.round(totalSeconds);
+
             const years = Math.floor(totalSeconds / 31536000);
             totalSeconds %= 31536000;
             const months = Math.floor(totalSeconds / 2592000);
@@ -473,19 +482,20 @@
             const minutes = Math.floor(totalSeconds / 60);
             const seconds = totalSeconds % 60;
             
-            if (years > 0) parts.push(`${years} ano(s)`);
-            if (months > 0) parts.push(`${months} meses`);
-            if (days > 0) parts.push(`${days} dia(s)`);
-            if (hours > 0) parts.push(`${hours} hora(s)`);
-            if (minutes > 0) parts.push(`${minutes} minuto(s)`);
-            if (seconds > 0) parts.push(`${seconds} segundo(s)`);
+            if (years > 0) parts.push(`${years} Year(s)`);
+            if (months > 0) parts.push(`${months} Month(s)`);
+            if (days > 0) parts.push(`${days} Day(s)`);
+            if (hours > 0) parts.push(`${hours} hour(s)`);
+            if (minutes > 0) parts.push(`${minutes} minute(s)`);
+            if (seconds > 0) parts.push(`${seconds} second(s)`);
             
-            return parts.length > 0 ? parts.join(', ') : '0 segundos';
+            return parts.length > 0 ? parts.join(', ') : '0 seconds';
         }
 
         function calculate() {
             const currentXp = parseInt(document.getElementById('currentXp').value);
             const targetLvl = parseInt(document.getElementById('targetLvl').value);
+            const efficiency = parseFloat(document.getElementById('efficiency').value) || 0;
             const selectedProf = document.getElementById('profSelect').value;
             const selectedItemName = document.getElementById('itemSelect').value;
 
@@ -510,7 +520,7 @@
                 return;
             }
 
-            function calculateDetails(itemName, craftsNeeded, selectedProfKey) {
+            function calculateDetails(itemName, craftsNeeded, selectedProfKey, currentEfficiency) {
                 const item = allData[selectedProfKey].find(i => i.Name === itemName);
                 if (!item) return { rawMaterials: {}, subCrafts: {}, subItemTimes: {}, totalTime: 0 };
                 
@@ -518,7 +528,9 @@
                 const subCrafts = {};
                 const subItemTimes = {};
                 
-                let totalTime = parseTime(item['Base Time']) * craftsNeeded;
+                const baseTime = parseTime(item['Base Time']);
+                const effectiveTime = baseTime * (1 - currentEfficiency / 100);
+                let totalTime = effectiveTime * craftsNeeded;
 
                 for (let i = 1; i <= 4; i++) {
                     const reqName = item[`Requirement ${i}`];
@@ -528,7 +540,7 @@
                         const isSubCraft = allData[selectedProfKey].some(subItem => subItem.Name === reqName);
                         if (isSubCraft) {
                             subCrafts[reqName] = (subCrafts[reqName] || 0) + reqAmount * craftsNeeded;
-                            const subResult = calculateDetails(reqName, reqAmount * craftsNeeded, selectedProfKey);
+                            const subResult = calculateDetails(reqName, reqAmount * craftsNeeded, selectedProfKey, currentEfficiency);
                             subItemTimes[reqName] = (subItemTimes[reqName] || 0) + subResult.totalTime;
                             totalTime += subResult.totalTime;
                             
@@ -549,7 +561,7 @@
             const totalXpPerCraft = selectedItem['Skill Exp'];
             const craftsNeeded = Math.ceil(xpNeeded / totalXpPerCraft);
 
-            const { rawMaterials, subCrafts, subItemTimes, totalTime } = calculateDetails(selectedItemName, craftsNeeded, selectedProf);
+            const { rawMaterials, subCrafts, subItemTimes, totalTime } = calculateDetails(selectedItemName, craftsNeeded, selectedProf, efficiency);
             
             const formattedTotalTime = formatTime(totalTime);
             const sortedSubCrafts = Object.keys(subCrafts).sort();
@@ -559,16 +571,19 @@
                                 <h3>Results</h3>
                                 <p><strong>XP Required:</strong> ${xpNeeded}</p>
                                 <p><strong>Total XP ${selectedItemName}:</strong> <span class="xp-highlight">${totalXpPerCraft}</span></p>
-                                <p><strong>Amont:</strong> ${craftsNeeded} x ${selectedItemName}</p>
+                                <p><strong>Amount:</strong> ${craftsNeeded} x ${selectedItemName}</p>
                               </div>`;
 
             resultHtml += `<div class="result-block">
-                             <h3>Creation Time</h3>`;
+                             <h3>Creation Time (with ${efficiency}% efficiency)</h3>`;
             
             // Tempo do item principal
-            const mainItemTime = parseTime(selectedItem['Base Time']) * craftsNeeded;
-            if (mainItemTime > 0) {
-                 resultHtml += `<p><strong>Time for ${selectedItemName}:</strong> <span class="time-highlight">${formatTime(mainItemTime)}</span></p>`;
+            const mainItemBaseTime = parseTime(selectedItem['Base Time']);
+            const mainItemEffectiveTime = mainItemBaseTime * (1 - efficiency / 100);
+            const mainItemTotalTime = mainItemEffectiveTime * craftsNeeded;
+
+            if (mainItemTotalTime > 0) {
+                 resultHtml += `<p><strong>Time for ${selectedItemName}:</strong> <span class="time-highlight">${formatTime(mainItemTotalTime)}</span></p>`;
             }
             
             // Tempos dos sub-itens
