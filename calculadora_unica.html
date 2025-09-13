@@ -5,17 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora de XP Multiprofissão</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
-        .container { max-width: 600px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        h1, h2, h3 { text-align: center; color: #444; }
+        /* Estilos do Tema Escuro */
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #121212; color: #e0e0e0; }
+        .container { max-width: 600px; margin: auto; background: #1f1f1f; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        h1, h2, h3 { text-align: center; color: #bb86fc; }
         .form-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 5px; font-weight: bold; }
-        input, select { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
-        button { width: 100%; padding: 10px; background-color: #5cb85c; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
-        button:hover { background-color: #4cae4c; }
-        #results { margin-top: 20px; border-top: 2px solid #eee; padding-top: 15px; }
-        .result-item { background: #e9e9e9; padding: 10px; border-radius: 4px; margin-bottom: 10px; }
-        .xp-highlight { color: #007BFF; font-weight: bold; }
+        input, select { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #444; background-color: #2c2c2c; color: #e0e0e0; border-radius: 4px; }
+        button { width: 100%; padding: 10px; background-color: #03dac6; color: #121212; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold; }
+        button:hover { background-color: #018786; }
+        #results { margin-top: 20px; border-top: 2px solid #333; padding-top: 15px; }
+        
+        /* Estilo para os blocos de resultados */
+        .result-block { background-color: #2c2c2c; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .result-block h3 { margin-top: 0; margin-bottom: 10px; color: #bb86fc; }
+        .result-block p, .result-block ul { margin: 0; padding: 0; }
+        .result-block ul { list-style-type: none; }
+        .result-block li { margin-bottom: 5px; }
+
+        .xp-highlight { color: #bb86fc; font-weight: bold; }
+        .time-highlight { color: #03dac6; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -174,13 +183,13 @@
 {"Name":"Dragonhide Leather Gloves"             ,"Level":70    ,"Base Time":"1280 s"      ,"Skill Exp":522     ,"Vendor Price":"2686 ouros"                            ,"Requirement 1":"Ancient Leather"     ,"Requirement 1 Amount":20,"Requirement 2":"Bone Charcoal"   ,"Requirement 2 Amount":8  ,"Requirement 3":"Exotic Solution"             ,"Requirement 3 Amount":32},
 {"Name":"Dragonhide Leather Hat"                ,"Level":70    ,"Base Time":"1280 s"      ,"Skill Exp":522     ,"Vendor Price":"2686 ouros"                            ,"Requirement 1":"Ancient Leather"     ,"Requirement 1 Amount":20,"Requirement 2":"Bone Charcoal"   ,"Requirement 2 Amount":8  ,"Requirement 3":"Exotic Solution"             ,"Requirement 3 Amount":32},
 {"Name":"Dragonhide Leather Bow"                ,"Level":70    ,"Base Time":"1280 s"      ,"Skill Exp":522     ,"Vendor Price":"2686 ouros"                            ,"Requirement 1":"Ancient Leather"     ,"Requirement 1 Amount":20,"Requirement 2":"Bone Charcoal"   ,"Requirement 2 Amount":8  ,"Requirement 3":"Exotic Solution"             ,"Requirement 3 Amount":32 ,"Requirement 4":"Cosmic Bowstring"             ,"Requirement 4 Amount":1},
-{"Name":"Abyssal Leather"                       ,"Level":80    ,"Base Time":"90 s"        ,"Skill Exp":37      ,"Vendor Price":"95 ouros"                              ,"Requirement 1":"Abyssal Hide"        ,"Requirement 1 Amount":2 ,"Requirement 2":"Bone Charcoal"   ,"Requirement 2 Amount":8  ,"Requirement 3":"Exotic Solution"             ,"Requirement 3 Amount":2} ,
+{"Name":"Abyssal Leather"                       ,"Level":80    ,"Base Time":"90 s"        ,"Skill Exp":37      ,"Vendor Price":"95 ouros"                              ,"Requirement 1":"Ancient Hide"        ,"Requirement 1 Amount":2 ,"Requirement 2":"Bone Charcoal"   ,"Requirement 2 Amount":8  ,"Requirement 3":"Exotic Solution"             ,"Requirement 3 Amount":2} ,
 {"Name":"Astral Bowstring"                      ,"Level":80    ,"Base Time":"720 s"       ,"Skill Exp":333     ,"Vendor Price":"2686 ouros"                            ,"Requirement 1":"Cosmic Cloth"        ,"Requirement 1 Amount":10,"Requirement 2":"Bone Charcoal"   ,"Requirement 2 Amount":8  ,"Requirement 3":"Exotic Thread"               ,"Requirement 3 Amount":32},
-{"Name":"Abyssal Leather Bodyarmor"             ,"Level":80    ,"Base Time":"1440 s"      ,"Skill Exp":667     ,"Vendor Price":"2686 ouros"                            ,"Requirement 1":"Abyssal Leather"     ,"Requirement 1 Amount":20,"Requirement 2":"Bone Charcoal"   ,"Requirement 2 Amount":8  ,"Requirement 3":"Exotic Solution"             ,"Requirement 3 Amount":32},
-{"Name":"Abyssal Leather Boots"                 ,"Level":80    ,"Base Time":"1440 s"      ,"Skill Exp":667     ,"Vendor Price":"2686 ouros"                            ,"Requirement 1":"Abyssal Leather"     ,"Requirement 1 Amount":20,"Requirement 2":"Bone Charcoal"   ,"Requirement 2 Amount":8  ,"Requirement 3":"Exotic Solution"             ,"Requirement 3 Amount":32},
-{"Name":"Abyssal Leather Gloves"                ,"Level":80    ,"Base Time":"1440 s"      ,"Skill Exp":667     ,"Vendor Price":"2686 ouros"                            ,"Requirement 1":"Abyssal Leather"     ,"Requirement 1 Amount":20,"Requirement 2":"Bone Charcoal"   ,"Requirement 2 Amount":8  ,"Requirement 3":"Exotic Solution"             ,"Requirement 3 Amount":32},
-{"Name":"Dragonhide Leather Hat"                ,"Level":80    ,"Base Time":"1440 s"      ,"Skill Exp":667     ,"Vendor Price":"2686 ouros"                            ,"Requirement 1":"Abyssal Leather"     ,"Requirement 1 Amount":20,"Requirement 2":"Bone Charcoal"   ,"Requirement 2 Amount":8  ,"Requirement 3":"Exotic Solution"             ,"Requirement 3 Amount":32},
-{"Name":"Abyssal Leather Bow"                   ,"Level":80    ,"Base Time":"1440 s"      ,"Skill Exp":667     ,"Vendor Price":"2686 ouros"                            ,"Requirement 1":"Abyssal Leather"     ,"Requirement 1 Amount":20,"Requirement 2":"Bone Charcoal"   ,"Requirement 2 Amount":8  ,"Requirement 3":"Exotic Solution"             ,"Requirement 3 Amount":32 ,"Requirement 4":"Astral Bowstring"             ,"Requirement 4 Amount":1}
+{"Name":"Abyssal Leather Bodyarmor"             ,"Level":80    ,"Base Time":"1440 s"      ,"Skill Exp":667     ,"Vendor Price":"2686 ouros"                            ,"Requirement 1":"Ancient Leather"     ,"Requirement 1 Amount":20,"Requirement 2":"Bone Charcoal"   ,"Requirement 2 Amount":8  ,"Requirement 3":"Exotic Solution"             ,"Requirement 3 Amount":32},
+{"Name":"Abyssal Leather Boots"                 ,"Level":80    ,"Base Time":"1440 s"      ,"Skill Exp":667     ,"Vendor Price":"2686 ouros"                            ,"Requirement 1":"Ancient Leather"     ,"Requirement 1 Amount":20,"Requirement 2":"Bone Charcoal"   ,"Requirement 2 Amount":8  ,"Requirement 3":"Exotic Solution"             ,"Requirement 3 Amount":32},
+{"Name":"Abyssal Leather Gloves"                ,"Level":80    ,"Base Time":"1440 s"      ,"Skill Exp":667     ,"Vendor Price":"2686 ouros"                            ,"Requirement 1":"Ancient Leather"     ,"Requirement 1 Amount":20,"Requirement 2":"Bone Charcoal"   ,"Requirement 2 Amount":8  ,"Requirement 3":"Exotic Solution"             ,"Requirement 3 Amount":32},
+{"Name":"Dragonhide Leather Hat"                ,"Level":80    ,"Base Time":"1440 s"      ,"Skill Exp":667     ,"Vendor Price":"2686 ouros"                            ,"Requirement 1":"Ancient Leather"     ,"Requirement 1 Amount":20,"Requirement 2":"Bone Charcoal"   ,"Requirement 2 Amount":8  ,"Requirement 3":"Exotic Solution"             ,"Requirement 3 Amount":32},
+{"Name":"Abyssal Leather Bow"                   ,"Level":80    ,"Base Time":"1440 s"      ,"Skill Exp":667     ,"Vendor Price":"2686 ouros"                            ,"Requirement 1":"Ancient Leather"     ,"Requirement 1 Amount":20,"Requirement 2":"Bone Charcoal"   ,"Requirement 2 Amount":8  ,"Requirement 3":"Exotic Solution"             ,"Requirement 3 Amount":32 ,"Requirement 4":"Cosmic Bowstring"             ,"Requirement 4 Amount":1}
           ]                                     ,
           "tailoring": [
 {"Name":"Wool Cloth"                              ,"Level":1     ,"Base Time":"15 s"        ,"Skill Exp":1       ,"Vendor Price":"4 ouros"                               ,"Requirement 1":"Raw Wool"            ,"Requirement 1 Amount":2 ,"Requirement 2":"Arcane Crystal"  ,"Requirement 2 Amount":1} ,
@@ -390,12 +399,10 @@
         const currentXpInput = document.getElementById('currentXp');
         const resultsDiv = document.getElementById('results');
 
-        // Dados de XP por nível (atualizado com a tabela fornecida)
         const XP_PER_LEVEL = [
             0, 84, 192, 324, 480, 645, 820, 1005, 1200, 1407, 1735, 2082, 2449, 2838, 3249, 3684, 4144, 4631, 5146, 5691, 6460, 7281, 8160, 9101, 10109, 11191, 12353, 13603, 14949, 16400, 18455, 20675, 23076, 25675, 28492, 31549, 34870, 38482, 42415, 46702, 52583, 58662, 64933, 71390, 78026, 84833, 91802, 98923, 106186, 114398, 123502, 132734, 142077, 151515, 161029, 170602, 180216, 189852, 199491, 209115, 220417, 232945, 246859, 262341, 279598, 298871, 320434, 344603, 371744, 402278, 441971, 486789, 537487, 594941, 660170, 734360, 818896, 915396, 1025752, 1152182, 1316749, 1492835, 1681248, 1882849, 2098562, 2329375, 2576345, 2840603, 3123359, 3425908, 3749636, 4269287, 4827911, 5428432, 6073992, 6767969, 7513995, 8315973, 9178099
         ];
         
-        // Função para obter o nível atual com base no XP
         function getLevelFromXp(xp) {
             let currentLevel = 1;
             for (let i = 0; i < XP_PER_LEVEL.length; i++) {
@@ -406,7 +413,6 @@
             return currentLevel;
         }
 
-        // Função para preencher a lista de profissões
         function populateProfessions() {
             for (const prof in allData) {
                 const option = document.createElement('option');
@@ -416,13 +422,12 @@
             }
         }
 
-        // Função para filtrar e preencher a lista de itens
         function updateItemList() {
             const selectedProf = profSelect.value;
             const currentXp = parseInt(currentXpInput.value) || 0;
             const currentLevel = getLevelFromXp(currentXp);
 
-            itemSelect.innerHTML = ''; // Limpa a lista de itens
+            itemSelect.innerHTML = '';
             const items = allData[selectedProf] || [];
 
             const filteredItems = items.filter(item => item.Level <= currentLevel);
@@ -442,29 +447,55 @@
             }
         }
 
-        // Adiciona event listener para a mudança de profissão
         profSelect.addEventListener('change', updateItemList);
 
-        // Inicializa a calculadora
         populateProfessions();
         updateItemList();
 
-        // Código de cálculo (mantido do original)
+        function parseTime(timeString) {
+            const parts = timeString.split(' ');
+            if (parts.length === 2) {
+                return parseInt(parts[0]);
+            }
+            return 0;
+        }
+
+        function formatTime(totalSeconds) {
+            let parts = [];
+            const years = Math.floor(totalSeconds / 31536000);
+            totalSeconds %= 31536000;
+            const months = Math.floor(totalSeconds / 2592000);
+            totalSeconds %= 2592000;
+            const days = Math.floor(totalSeconds / 86400);
+            totalSeconds %= 86400;
+            const hours = Math.floor(totalSeconds / 3600);
+            totalSeconds %= 3600;
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            
+            if (years > 0) parts.push(`${years} ano(s)`);
+            if (months > 0) parts.push(`${months} meses`);
+            if (days > 0) parts.push(`${days} dia(s)`);
+            if (hours > 0) parts.push(`${hours} hora(s)`);
+            if (minutes > 0) parts.push(`${minutes} minuto(s)`);
+            if (seconds > 0) parts.push(`${seconds} segundo(s)`);
+            
+            return parts.length > 0 ? parts.join(', ') : '0 segundos';
+        }
+
         function calculate() {
             const currentXp = parseInt(document.getElementById('currentXp').value);
             const targetLvl = parseInt(document.getElementById('targetLvl').value);
             const selectedProf = document.getElementById('profSelect').value;
             const selectedItemName = document.getElementById('itemSelect').value;
-            
-            // Verifica se o nível desejado está dentro do alcance
+
             if (targetLvl < 1 || targetLvl > XP_PER_LEVEL.length) {
                 resultsDiv.innerHTML = `<p>O nível desejado deve ser entre 1 e ${XP_PER_LEVEL.length}.</p>`;
                 return;
             }
 
             const selectedProfData = allData[selectedProf];
-            
-            const targetXp = XP_PER_LEVEL[targetLvl - 1]; // Ajusta o índice para começar do 0
+            const targetXp = XP_PER_LEVEL[targetLvl - 1];
 
             if (targetXp <= currentXp) {
                 resultsDiv.innerHTML = `<p>Você já atingiu ou superou o nível desejado!</p>`;
@@ -472,63 +503,103 @@
             }
 
             const xpNeeded = targetXp - currentXp;
-
             const selectedItem = selectedProfData.find(item => item.Name === selectedItemName);
+
             if (!selectedItem) {
                 resultsDiv.innerHTML = `<p>Item não encontrado.</p>`;
                 return;
             }
 
-            function calculateCraftsAndMaterials(itemName, craftsNeeded, currentXp, selectedProfKey, rawMaterials, subCrafts, isInitialCall) {
+            function calculateDetails(itemName, craftsNeeded, selectedProfKey) {
                 const item = allData[selectedProfKey].find(i => i.Name === itemName);
-                if (!item) return;
-                const totalXpPerCraft = isInitialCall ? item['Skill Exp'] : 0;
+                if (!item) return { rawMaterials: {}, subCrafts: {}, subItemTimes: {}, totalTime: 0 };
                 
-                if (isInitialCall) {
-                    craftsNeeded = Math.ceil(xpNeeded / totalXpPerCraft);
-                }
+                const rawMaterials = {};
+                const subCrafts = {};
+                const subItemTimes = {};
+                
+                let totalTime = parseTime(item['Base Time']) * craftsNeeded;
 
                 for (let i = 1; i <= 4; i++) {
                     const reqName = item[`Requirement ${i}`];
                     const reqAmount = item[`Requirement ${i} Amount`];
+                    
                     if (reqName && reqAmount) {
                         const isSubCraft = allData[selectedProfKey].some(subItem => subItem.Name === reqName);
                         if (isSubCraft) {
                             subCrafts[reqName] = (subCrafts[reqName] || 0) + reqAmount * craftsNeeded;
-                            calculateCraftsAndMaterials(reqName, reqAmount * craftsNeeded, currentXp, selectedProfKey, rawMaterials, subCrafts, false);
+                            const subResult = calculateDetails(reqName, reqAmount * craftsNeeded, selectedProfKey);
+                            subItemTimes[reqName] = (subItemTimes[reqName] || 0) + subResult.totalTime;
+                            totalTime += subResult.totalTime;
+                            
+                            for (const mat in subResult.rawMaterials) {
+                                rawMaterials[mat] = (rawMaterials[mat] || 0) + subResult.rawMaterials[mat];
+                            }
+                            for (const sub in subResult.subCrafts) {
+                                subCrafts[sub] = (subCrafts[sub] || 0) + subResult.subCrafts[sub];
+                            }
                         } else {
                             rawMaterials[reqName] = (rawMaterials[reqName] || 0) + reqAmount * craftsNeeded;
                         }
                     }
                 }
-                return { xpNeeded, craftsNeeded, totalXpPerCraft, rawMaterials, subCrafts };
+                return { rawMaterials, subCrafts, subItemTimes, totalTime };
             }
 
-            const rawMaterials = {};
-            const subCrafts = {};
-            const { craftsNeeded, totalXpPerCraft } = calculateCraftsAndMaterials(selectedItemName, 0, currentXp, selectedProf, rawMaterials, subCrafts, true);
+            const totalXpPerCraft = selectedItem['Skill Exp'];
+            const craftsNeeded = Math.ceil(xpNeeded / totalXpPerCraft);
+
+            const { rawMaterials, subCrafts, subItemTimes, totalTime } = calculateDetails(selectedItemName, craftsNeeded, selectedProf);
             
-            let resultHtml = `<h2>Resultados</h2>
-                              <div class="result-item">
+            const formattedTotalTime = formatTime(totalTime);
+            const sortedSubCrafts = Object.keys(subCrafts).sort();
+            const sortedRawMaterials = Object.keys(rawMaterials).sort();
+            
+            let resultHtml = `<div class="result-block">
+                                <h3>Resultados</h3>
                                 <p><strong>XP Necessário:</strong> ${xpNeeded}</p>
-                                <p><strong>XP total por ${selectedItemName}:</strong> <span class="xp-highlight">${totalXpPerCraft}</span> (incluindo sub-itens)</p>
+                                <p><strong>XP total por ${selectedItemName}:</strong> <span class="xp-highlight">${totalXpPerCraft}</span></p>
                                 <p><strong>Itens a serem feitos:</strong> ${craftsNeeded} x ${selectedItemName}</p>
                               </div>`;
+
+            resultHtml += `<div class="result-block">
+                             <h3>Tempo de Criação</h3>`;
             
-            const sortedSubCrafts = Object.keys(subCrafts).sort();
-            if (sortedSubCrafts.length > 0) {
-                resultHtml += `<h3>Sub-itens a serem feitos</h3>`;
-                for (const mat of sortedSubCrafts) {
-                    resultHtml += `<div class="result-item"><p><strong>${mat}:</strong> ${subCrafts[mat]}</p></div>`;
+            // Tempo do item principal
+            const mainItemTime = parseTime(selectedItem['Base Time']) * craftsNeeded;
+            if (mainItemTime > 0) {
+                 resultHtml += `<p><strong>Tempo para ${selectedItemName}:</strong> <span class="time-highlight">${formatTime(mainItemTime)}</span></p>`;
+            }
+            
+            // Tempos dos sub-itens
+            for (const mat of sortedSubCrafts) {
+                const subTime = subItemTimes[mat] || 0;
+                if (subTime > 0) {
+                    resultHtml += `<p><strong>Tempo para ${mat}:</strong> <span class="time-highlight">${formatTime(subTime)}</span></p>`;
                 }
             }
-
-            const sortedRawMaterials = Object.keys(rawMaterials).sort();
-            if (sortedRawMaterials.length > 0) {
-                resultHtml += `<h3>Materiais Básicos Gastos</h3>`;
-                for (const mat of sortedRawMaterials) {
-                    resultHtml += `<div class="result-item"><p><strong>${mat}:</strong> ${rawMaterials[mat]}</p></div>`;
+            
+            // Tempo Total Estimado
+            resultHtml += `<p><strong>Tempo Total:</strong> <span class="time-highlight">${formattedTotalTime}</span></p>
+                           </div>`;
+            
+            // Seções de Materiais e Sub-itens
+            if (sortedSubCrafts.length > 0) {
+                resultHtml += `<div class="result-block">
+                                 <h3>Sub-itens a serem feitos</h3>`;
+                for (const mat of sortedSubCrafts) {
+                    resultHtml += `<p><strong>${mat}:</strong> ${subCrafts[mat]}</p>`;
                 }
+                resultHtml += `</div>`;
+            }
+
+            if (sortedRawMaterials.length > 0) {
+                resultHtml += `<div class="result-block">
+                                 <h3>Materiais Básicos Gastos</h3>`;
+                for (const mat of sortedRawMaterials) {
+                    resultHtml += `<p><strong>${mat}:</strong> ${rawMaterials[mat]}</p>`;
+                }
+                resultHtml += `</div>`;
             }
             
             resultsDiv.innerHTML = resultHtml;
