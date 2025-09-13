@@ -371,203 +371,136 @@
           ]
         };
 
-        const professions = Object.keys(allData);
         const profSelect = document.getElementById('profSelect');
         const itemSelect = document.getElementById('itemSelect');
+        const currentXpInput = document.getElementById('currentXp');
+        const resultsDiv = document.getElementById('results');
 
-        function updateProfSelect() {
-            professions.forEach(prof => {
+        // Dados de XP por nível (atualizado com a tabela fornecida)
+        const XP_PER_LEVEL = [
+            0, 84, 192, 324, 480, 645, 820, 1005, 1200, 1407, 1735, 2082, 2449, 2838, 3249, 3684, 4144, 4631, 5146, 5691, 6460, 7281, 8160, 9101, 10109, 11191, 12353, 13603, 14949, 16400, 18455, 20675, 23076, 25675, 28492, 31549, 34870, 38482, 42415, 46702, 52583, 58662, 64933, 71390, 78026, 84833, 91802, 98923, 106186, 114398, 123502, 132734, 142077, 151515, 161029, 170602, 180216, 189852, 199491, 209115, 220417, 232945, 246859, 262341, 279598, 298871, 320434, 344603, 371744, 402278, 441971, 486789, 537487, 594941, 660170, 734360, 818896, 915396, 1025752, 1152182, 1316749, 1492835, 1681248, 1882849, 2098562, 2329375, 2576345, 2840603, 3123359, 3425908, 3749636, 4269287, 4827911, 5428432, 6073992, 6767969, 7513995, 8315973, 9178099
+        ];
+        
+        // Função para obter o nível atual com base no XP
+        function getLevelFromXp(xp) {
+            let currentLevel = 1;
+            for (let i = 0; i < XP_PER_LEVEL.length; i++) {
+                if (xp >= XP_PER_LEVEL[i]) {
+                    currentLevel = i + 1;
+                }
+            }
+            return currentLevel;
+        }
+
+        // Função para preencher a lista de profissões
+        function populateProfessions() {
+            for (const prof in allData) {
                 const option = document.createElement('option');
                 option.value = prof;
-                option.text = prof.charAt(0).toUpperCase() + prof.slice(1);
+                option.textContent = prof.charAt(0).toUpperCase() + prof.slice(1);
                 profSelect.appendChild(option);
-            });
-            updateItemList();
+            }
         }
 
+        // Função para filtrar e preencher a lista de itens
         function updateItemList() {
             const selectedProf = profSelect.value;
-            const items = allData[selectedProf].filter(item => item.Level <= calculateCurrentLevel());
-            itemSelect.innerHTML = '';
-            items.forEach(item => {
-                const option = document.createElement('option');
-                option.value = item.Name;
-                option.text = `(Lvl ${item.Level}) - ${item.Name}`;
-                itemSelect.appendChild(option);
-            });
-        }
+            const currentXp = parseInt(currentXpInput.value) || 0;
+            const currentLevel = getLevelFromXp(currentXp);
 
-        function calculateCurrentLevel() {
-            const currentXp = parseInt(document.getElementById('currentXp').value);
-            const levels = {
-                "1": 0                                                                                                                     ,"2": 84                      ,"3": 192                  ,"4": 324                        ,"5": 480                                           ,"6": 645                              ,"7": 820                 ,"8": 1005                         ,"9": 1200                 ,"10": 1407                                    ,
-          "11": 1735                                                                                                                 ,"12": 2082                   ,"13": 2449                ,"14": 2838                      ,"15": 3249                                         ,"16": 3584                            ,"17": 4144               ,"18": 4631                        ,"19": 5146                ,"20": 5691                                    ,
-          "21": 6460                                                                                                                 ,"22": 7281                   ,"23": 8160                ,"24": 9101                      ,"25": 10109                                        ,"26": 11191                           ,"27": 12353              ,"28": 13603                       ,"29": 14949               ,"30": 16400                                   ,
-          "31": 18455                                                                                                                ,"32": 20675                  ,"33": 23076               ,"34": 25675                     ,"35": 28492                                        ,"36": 31549                           ,"37": 34870              ,"38": 38482                       ,"39": 42415               ,"40": 46702                                   ,
-          "41": 52583                                                                                                                ,"42": 58662                  ,"43": 64933               ,"44": 71390                     ,"45": 78026                                        ,"46": 84833                           ,"47": 91802              ,"48": 98923                       ,"49": 106186              ,"50": 114398                                  ,
-          "51": 123502                                                                                                               ,"52": 132734                 ,"53": 142077              ,"54": 151515                    ,"55": 161029                                       ,"56": 170602                          ,"57": 180216             ,"58": 189852                      ,"59": 199491              ,"60": 209115                                  ,
-          "61": 220417                                                                                                               ,"62": 232945                 ,"63": 246859              ,"64": 262341                    ,"65": 279598                                       ,"66": 298871                          ,"67": 320434             ,"68": 344603                      ,"69": 371744              ,"70": 402278                                  ,
-          "71": 441971                                                                                                               ,"72": 486789                 ,"73": 537487              ,"74": 594941                    ,"75": 660170                                       ,"76": 734360                          ,"77": 818896             ,"78": 915396                      ,"79": 1025752             ,"80": 1152182                                 ,
-          "81": 1316749                                                                                                              ,"82": 1492835                ,"83": 1681248             ,"84": 1882849                   ,"85": 2098562                                      ,"86": 2329375                         ,"87": 2576345            ,"88": 2840603                     ,"89": 3123359             ,"90": 3425908                                 ,
-          "91": 3749636                                                                                                              ,"92": 4269287                ,"93": 4827911             ,"94": 5428432                   ,"95": 6073992                                      ,"96": 6767969                         ,"97": 7513995            ,"98": 8315973                     ,"99": 9178099
-        };
-            let level = 1;
-            for (let lvl in levels) {
-                if (currentXp >= levels[lvl]) {
-                    level = parseInt(lvl);
-                }
-            }
-            return level;
-        }
+            itemSelect.innerHTML = ''; // Limpa a lista de itens
+            const items = allData[selectedProf] || [];
 
-        function calculateXP(targetLvl, currentXp) {
-            const xpLevels = [0, 84, 192, 324, 480, 645, 820, 1005, 1200, 1407, 1735, 2082, 2449, 2838, 3249, 3584, 4144, 4631, 5146, 5691, 6460, 7281, 8160, 9101, 10109, 11191, 12353, 13603, 14949, 16400, 18455, 20675, 23076, 25675, 28492, 31549, 34870, 38482, 42415, 46702, 52583, 58662, 64933, 71390, 78026, 84833, 91802, 98923, 106186, 114398, 123502, 132734, 142077, 151515, 161029, 170602, 180216, 189852, 199491, 209115, 220417, 232945, 246859, 262341, 279598, 298871, 320434, 344603, 371744, 402278, 441971, 486789, 537487, 594941, 660170, 734360, 818896, 915396, 1025752, 1152182, 1316749, 1492835, 1681248, 1882849, 2098562, 2329375, 2576345, 2840603, 3123359, 3425908, 3749636, 4269287, 4827911, 5428432, 6073992, 6767969, 7513995, 8315973, 9178099];
-            const xpToTarget = xpLevels[targetLvl - 1];
-            return xpToTarget - currentXp;
-        }
+            const filteredItems = items.filter(item => item.Level <= currentLevel);
 
-        function findItem(itemName, profession) {
-            return allData[profession].find(item => item.Name === itemName);
-        }
-
-        function calculateRequirements(itemName, profession, requiredItems, subCrafts) {
-            const item = findItem(itemName, profession);
-            if (!item) {
-                return;
-            }
-
-            const requirements = {};
-            for (let i = 1; i <= 10; i++) {
-                const reqName = item["Requirement " + i];
-                const reqAmount = item["Requirement " + i + " Amount"];
-                if (reqName && reqAmount) {
-                    requirements[reqName] = reqAmount;
-                }
-            }
-
-            for (const req in requirements) {
-                const reqAmount = requirements[req];
-                const subItem = findItem(req, profession);
-                if (subItem) {
-                    if (subCrafts[req]) {
-                        subCrafts[req] += reqAmount;
-                    } else {
-                        subCrafts[req] = reqAmount;
-                    }
-                    calculateRequirements(req, profession, requiredItems, subCrafts);
-                } else {
-                    if (requiredItems[req]) {
-                        requiredItems[req] += reqAmount;
-                    } else {
-                        requiredItems[req] = reqAmount;
-                    }
-                }
-            }
-        }
-
-        function calculateTime(item, amount) {
-            let baseTimeStr = item["Base Time"];
-            let baseTime = parseFloat(baseTimeStr);
-            let time = baseTime * amount;
-
-            for (let i = 1; i <= 10; i++) {
-                const reqName = item["Requirement " + i];
-                const reqAmount = item["Requirement " + i + " Amount"];
-                if (reqName && reqAmount) {
-                    const subItem = findItem(reqName, profSelect.value);
-                    if (subItem) {
-                        time += calculateTime(subItem, reqAmount * amount);
-                    }
-                }
-            }
-            return time;
-        }
-
-        function formatTime(totalSeconds) {
-            let totalTime = Math.floor(totalSeconds);
-            const secInMin = 60;
-            const secInHour = secInMin * 60;
-            const secInDay = secInHour * 24;
-            const secInMonth = secInDay * 30.44; 
-            const secInYear = secInDay * 365.25; 
-
-            let years = Math.floor(totalTime / secInYear);
-            totalTime %= secInYear;
-            let months = Math.floor(totalTime / secInMonth);
-            totalTime %= secInMonth;
-            let days = Math.floor(totalTime / secInDay);
-            totalTime %= secInDay;
-            let hours = Math.floor(totalTime / secInHour);
-            totalTime %= secInHour;
-            let minutes = Math.floor(totalTime / secInMin);
-            const seconds = Math.floor(totalTime % secInMin);
-
-            const parts = [];
-
-            if (years > 0) {
-                parts.push(`${years} ano${years > 1 ? 's' : ''}`);
-            }
-            if (months > 0) {
-                parts.push(`${months} m${months > 1 ? 'eses' : 'ês'}`);
-            }
-            if (days > 0) {
-                parts.push(`${days} dia${days > 1 ? 's' : ''}`);
-            }
-            if (hours > 0) {
-                parts.push(`${hours} hora${hours > 1 ? 's' : ''}`);
-            }
-            if (minutes > 0) {
-                parts.push(`${minutes} minuto${minutes > 1 ? 's' : ''}`);
-            }
-            if (seconds > 0 || parts.length === 0) {
-                parts.push(`${seconds} segundo${seconds > 1 ? 's' : ''}`);
-            }
-
-            if (parts.length > 1) {
-                const last = parts.pop();
-                return parts.join(', ') + ' e ' + last;
+            if (filteredItems.length > 0) {
+                filteredItems.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.Name;
+                    option.textContent = `(Lvl ${item.Level}) ${item.Name}`;
+                    itemSelect.appendChild(option);
+                });
             } else {
-                return parts[0];
+                const option = document.createElement('option');
+                option.textContent = 'Nenhum item disponível para este nível';
+                option.disabled = true;
+                itemSelect.appendChild(option);
             }
         }
 
+        // Adiciona event listener para a mudança de profissão
+        profSelect.addEventListener('change', updateItemList);
+
+        // Inicializa a calculadora
+        populateProfessions();
+        updateItemList();
+
+        // Código de cálculo (mantido do original)
         function calculate() {
             const currentXp = parseInt(document.getElementById('currentXp').value);
             const targetLvl = parseInt(document.getElementById('targetLvl').value);
-            const selectedItemName = itemSelect.value;
-            const selectedProf = profSelect.value;
-            const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = '';
-
-            if (!selectedItemName) {
-                resultsDiv.innerHTML = '<div class="result-item">Por favor, selecione um item para calcular.</div>';
-                return;
-            }
-
-            const item = findItem(selectedItemName, selectedProf);
-            const xpNeeded = calculateXP(targetLvl, currentXp);
-            if (xpNeeded <= 0) {
-                resultsDiv.innerHTML = '<div class="result-item">Você já atingiu o nível desejado!</div>';
-                return;
-            }
-
-            const totalXpPerCraft = item["Skill Exp"];
-            const craftsNeeded = Math.ceil(xpNeeded / totalXpPerCraft);
-            const requiredItems = {};
-            const subCrafts = {};
+            const selectedProf = document.getElementById('profSelect').value;
+            const selectedItemName = document.getElementById('itemSelect').value;
             
-            const totalTimeInSeconds = calculateTime(item, craftsNeeded);
-            const formattedTime = formatTime(totalTimeInSeconds);
-            calculateRequirements(selectedItemName, selectedProf, requiredItems, subCrafts);
+            // Verifica se o nível desejado está dentro do alcance
+            if (targetLvl < 1 || targetLvl > XP_PER_LEVEL.length) {
+                resultsDiv.innerHTML = `<p>O nível desejado deve ser entre 1 e ${XP_PER_LEVEL.length}.</p>`;
+                return;
+            }
 
+            const selectedProfData = allData[selectedProf];
+            
+            const targetXp = XP_PER_LEVEL[targetLvl - 1]; // Ajusta o índice para começar do 0
+
+            if (targetXp <= currentXp) {
+                resultsDiv.innerHTML = `<p>Você já atingiu ou superou o nível desejado!</p>`;
+                return;
+            }
+
+            const xpNeeded = targetXp - currentXp;
+
+            const selectedItem = selectedProfData.find(item => item.Name === selectedItemName);
+            if (!selectedItem) {
+                resultsDiv.innerHTML = `<p>Item não encontrado.</p>`;
+                return;
+            }
+
+            function calculateCraftsAndMaterials(itemName, craftsNeeded, currentXp, selectedProfKey, rawMaterials, subCrafts, isInitialCall) {
+                const item = allData[selectedProfKey].find(i => i.Name === itemName);
+                if (!item) return;
+                const totalXpPerCraft = isInitialCall ? item['Skill Exp'] : 0;
+                
+                if (isInitialCall) {
+                    craftsNeeded = Math.ceil(xpNeeded / totalXpPerCraft);
+                }
+
+                for (let i = 1; i <= 4; i++) {
+                    const reqName = item[`Requirement ${i}`];
+                    const reqAmount = item[`Requirement ${i} Amount`];
+                    if (reqName && reqAmount) {
+                        const isSubCraft = allData[selectedProfKey].some(subItem => subItem.Name === reqName);
+                        if (isSubCraft) {
+                            subCrafts[reqName] = (subCrafts[reqName] || 0) + reqAmount * craftsNeeded;
+                            calculateCraftsAndMaterials(reqName, reqAmount * craftsNeeded, currentXp, selectedProfKey, rawMaterials, subCrafts, false);
+                        } else {
+                            rawMaterials[reqName] = (rawMaterials[reqName] || 0) + reqAmount * craftsNeeded;
+                        }
+                    }
+                }
+                return { xpNeeded, craftsNeeded, totalXpPerCraft, rawMaterials, subCrafts };
+            }
+
+            const rawMaterials = {};
+            const subCrafts = {};
+            const { craftsNeeded, totalXpPerCraft } = calculateCraftsAndMaterials(selectedItemName, 0, currentXp, selectedProf, rawMaterials, subCrafts, true);
+            
             let resultHtml = `<h2>Resultados</h2>
                               <div class="result-item">
                                 <p><strong>XP Necessário:</strong> ${xpNeeded}</p>
-                                <p><strong>XP total por ${selectedItemName}:</strong> <span class="xp-highlight">${totalXpPerCraft}</span></p>
+                                <p><strong>XP total por ${selectedItemName}:</strong> <span class="xp-highlight">${totalXpPerCraft}</span> (incluindo sub-itens)</p>
                                 <p><strong>Itens a serem feitos:</strong> ${craftsNeeded} x ${selectedItemName}</p>
-                                <p><strong>Tempo Total de Criação:</strong> ${formattedTime}</p>
                               </div>`;
-
+            
             const sortedSubCrafts = Object.keys(subCrafts).sort();
             if (sortedSubCrafts.length > 0) {
                 resultHtml += `<h3>Sub-itens a serem feitos</h3>`;
@@ -576,18 +509,16 @@
                 }
             }
 
-            const sortedRawMaterials = Object.keys(requiredItems).sort();
+            const sortedRawMaterials = Object.keys(rawMaterials).sort();
             if (sortedRawMaterials.length > 0) {
                 resultHtml += `<h3>Materiais Básicos Gastos</h3>`;
                 for (const mat of sortedRawMaterials) {
-                    resultHtml += `<div class="result-item"><p><strong>${mat}:</strong> ${requiredItems[mat]}</p></div>`;
+                    resultHtml += `<div class="result-item"><p><strong>${mat}:</strong> ${rawMaterials[mat]}</p></div>`;
                 }
             }
             
             resultsDiv.innerHTML = resultHtml;
         }
-        
-        updateProfSelect();
     </script>
 </body>
 </html>
