@@ -1,18 +1,9 @@
 Prioriadades:
-*(Nome, Level, Base Time e Skill Exp) de (Dungeon, Alchemy, Woodcraft, Cooking, Crafting e forging) -  Feito.
+*(Nome, Level, Base Time e Skill Exp) de (Dungeon, Alchemy, Woodcraft, Cooking, Crafting, leatherworking, tailoring e forging) -  Feito.
 * Adicionar handles - Feito. 
 * Nome dos itens de forja - Feito
-*Adicionar itens lvl 80. (forja - Feito)
+*Adicionar itens lvl 80. (forja, leatherworking e tailoring - Feito)
 
-
-
-***forging - falta skill xp***
-
-
-
-
-
-*Adicionar itens lvl 80. ( leatherworking e tailoring)
 
 
 sem muita Prioriadade:
