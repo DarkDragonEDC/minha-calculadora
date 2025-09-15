@@ -3,23 +3,19 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>XP Calculator — Multiprofession</title>
-<link rel="icon" href="" />
+<title>XP CALCULATOR</title>
 <style>
   :root{
     --bg:#f3f6fb;
     --panel:#0f1724;
     --muted:#9aa3b2;
     --accent:#7c3aed;
-    --card:#0b1220;
-    --card-2:#111827;
     --glass: rgba(255,255,255,0.03);
-    --success:#10b981;
   }
   *{box-sizing:border-box}
   body{
     margin:0;
-    font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
     background: linear-gradient(180deg,#071124 0%, #081424 60%);
     color:#e6eef8;
     padding:18px;
@@ -97,6 +93,12 @@
     gap:10px;
   }
 
+  /* specific layout for efficiency + item: smaller efficiency, larger item */
+  .grid-two--compact{
+    grid-template-columns: 0.55fr 1.45fr;
+    gap:10px;
+  }
+
   .credits{margin-top:8px;text-align:center;color:var(--muted);font-size:0.85rem}
 
   @media (max-width:980px){
@@ -105,13 +107,14 @@
 
   .small-muted{color:var(--muted);font-size:0.85rem}
   .pill{display:inline-block;background:var(--glass);padding:6px 10px;border-radius:999px;font-size:0.85rem}
+  .donate-wrap{text-align:center;margin-top:8px;} /* centers donate button */
 </style>
 </head>
 <body>
   <main class="wrap">
     <section class="card" aria-labelledby="title">
       <header>
-        <h1 id="title">XP CALCULATOR — Multiprofession</h1>
+        <h1 id="title">XP CALCULATOR</h1>
         <p class="small-muted">Choose profession, item and calculate how much XP and resources you need.</p>
       </header>
 
@@ -133,14 +136,15 @@
           </div>
         </div>
 
-        <div class="grid-two">
+        <!-- compact grid: efficiency smaller, item larger -->
+        <div class="grid-two grid-two--compact">
           <div class="form-row">
             <label for="efficiency">Efficiency (%)</label>
             <input id="efficiency" type="number" min="0" max="99" value="0" aria-label="Efficiency">
           </div>
 
           <div class="form-row">
-            <label for="itemSelect">Item (available at your level)</label>
+            <label for="itemSelect">Item</label>
             <select id="itemSelect" aria-label="Item"></select>
           </div>
         </div>
@@ -153,8 +157,8 @@
           <div>Discord: <span class="pill">darkdragonx3985</span></div>
         </div>
 
-        <div style="margin-top:12px">
-          <form class="paypal-donate-btn" action="https://www.paypal.com/donate" method="post" target="_top">
+        <div class="donate-wrap">
+          <form class="paypal-donate-btn" action="https://www.paypal.com/donate" method="post" target="_top" style="display:inline-block;text-align:center">
             <input type="hidden" name="business" value="JQSHTGU3WZA5Y" />
             <input type="hidden" name="no_recurring" value="0" />
             <input type="hidden" name="currency_code" value="BRL" />
@@ -162,6 +166,7 @@
             <img alt="" border="0" src="https://www.paypal.com/en_BR/i/scr/pixel.gif" width="1" height="1" />
           </form>
         </div>
+
       </div>
     </section>
 
@@ -374,4 +379,44 @@
       const finalRaw = finalDetail.rawMaterials;
       const finalSubs = finalDetail.subCrafts;
 
-      resultsSummary.innerHTML = `<strong>XP needed:</strong> ${formatNumber(xpNeeded)} —
+      resultsSummary.innerHTML = `<strong>XP needed:</strong> ${formatNumber(xpNeeded)} — <strong>Items required:</strong> ${formatNumber(craftsNeeded)} x ${itemName} (each gives ${formatNumber(singleDetail.totalXp)} XP)`;
+      resultsMore.innerHTML = `<span class="small-muted">Estimated current level: ${getLevelFromXp(currentXp)} — Target level: ${targetLvl}</span>`;
+
+      timeBlock.style.display = 'block';
+      timeList.innerHTML = `<p><strong>Total estimated time:</strong> ${formatTime(totalTimeFinal)}</p>`;
+
+      const subsKeys = Object.keys(finalSubs).sort();
+      if(subsKeys.length){
+        subcraftBlock.style.display = 'block';
+        subList.innerHTML = subsKeys.map(k => `<p>${k}: ${formatNumber(finalSubs[k])}</p>`).join('');
+      } else {
+        subcraftBlock.style.display = 'none';
+        subList.innerHTML = '';
+      }
+
+      const matsKeys = Object.keys(finalRaw).sort();
+      if(matsKeys.length){
+        rawBlock.style.display = 'block';
+        rawList.innerHTML = matsKeys.map(k => `<p>${k}: ${formatNumber(finalRaw[k])}</p>`).join('');
+      } else {
+        rawBlock.style.display = 'none';
+        rawList.innerHTML = '';
+      }
+    }
+
+    profSelect.addEventListener('change', updateItemList);
+    currentXpInput.addEventListener('change', updateItemList);
+
+    function tryPopulate(retries=0){
+      if(typeof allData === 'object'){
+        populateProfessions();
+      } else if(retries < 20){
+        setTimeout(()=>tryPopulate(retries+1), 100);
+      } else {
+        profSelect.innerHTML = '<option disabled>Data failed to load</option>';
+      }
+    }
+    tryPopulate();
+  </script>
+</body>
+</html>
