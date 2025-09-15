@@ -57,7 +57,6 @@
      <script src="./itensimport.js"></script>
 
     <script>
-
         const profSelect = document.getElementById('profSelect');
         const itemSelect = document.getElementById('itemSelect');
         const currentXpInput = document.getElementById('currentXp');
@@ -67,6 +66,12 @@
             0, 84, 192, 324, 480, 645, 820, 1005, 1200, 1407, 1735, 2082, 2449, 2838, 3249, 3684, 4144, 4631, 5146, 5691, 6460, 7281, 8160, 9101, 10109, 11191, 12353, 13603, 14949, 16400, 18455, 20675, 23076, 25675, 28492, 31549, 34870, 38482, 42415, 46702, 52583, 58662, 64933, 71390, 78026, 84833, 91802, 98923, 106186, 114398, 123502, 132734, 142077, 151515, 161029, 170602, 180216, 189852, 199491, 209115, 220417, 232945, 246859, 262341, 279598, 298871, 320434, 344603, 371744, 402278, 441971, 486789, 537487, 594941, 660170, 734360, 818896, 915396, 1025752, 1152182, 1316749, 1492835, 1681248, 1882849, 2098562, 2329375, 2576345, 2840603, 3123359, 3425908, 3749636, 4269287, 4827911, 5428432, 6073992, 6767969, 7513995, 8315973, 9178099
         ];
         
+        // --- FUNÇÃO ADICIONADA ---
+        function formatNumber(number) {
+            return number.toLocaleString('pt-BR');
+        }
+        // --------------------------
+
         function getLevelFromXp(xp) {
             let currentLevel = 1;
             for (let i = 0; i < XP_PER_LEVEL.length; i++) {
@@ -128,7 +133,6 @@
             if (totalSeconds < 0) totalSeconds = 0;
             let parts = [];
             
-            // Arredondar para o segundo mais próximo para evitar casas decimais longas
             totalSeconds = Math.round(totalSeconds);
 
             const years = Math.floor(totalSeconds / 31536000);
@@ -229,15 +233,14 @@
             
             let resultHtml = `<div class="result-block">
                                 <h3>Results</h3>
-                                <p><strong>XP Required:</strong> ${xpNeeded}</p>
-                                <p><strong>Total XP ${selectedItemName}:</strong> <span class="xp-highlight">${totalXpPerCraft}</span></p>
-                                <p><strong>Amount:</strong> ${craftsNeeded} x ${selectedItemName}</p>
+                                <p><strong>XP Required:</strong> ${formatNumber(xpNeeded)}</p>
+                                <p><strong>Total XP ${selectedItemName}:</strong> <span class="xp-highlight">${formatNumber(totalXpPerCraft)}</span></p>
+                                <p><strong>Amount:</strong> ${formatNumber(craftsNeeded)} x ${selectedItemName}</p>
                               </div>`;
 
             resultHtml += `<div class="result-block">
                              <h3>Creation Time (with ${efficiency}% efficiency)</h3>`;
             
-            // Tempo do item principal
             const mainItemBaseTime = parseTime(selectedItem['Base Time']);
             const mainItemEffectiveTime = mainItemBaseTime * (1 - efficiency / 100);
             const mainItemTotalTime = mainItemEffectiveTime * craftsNeeded;
@@ -246,7 +249,6 @@
                  resultHtml += `<p><strong>Time for ${selectedItemName}:</strong> <span class="time-highlight">${formatTime(mainItemTotalTime)}</span></p>`;
             }
             
-            // Tempos dos sub-itens
             for (const mat of sortedSubCrafts) {
                 const subTime = subItemTimes[mat] || 0;
                 if (subTime > 0) {
@@ -254,16 +256,14 @@
                 }
             }
             
-            // Tempo Total Estimado
             resultHtml += `<p><strong>Total Time:</strong> <span class="time-highlight">${formattedTotalTime}</span></p>
                            </div>`;
             
-            // Seções de Materiais e Sub-itens
             if (sortedSubCrafts.length > 0) {
                 resultHtml += `<div class="result-block">
                                  <h3>Sub-items to be done</h3>`;
                 for (const mat of sortedSubCrafts) {
-                    resultHtml += `<p><strong>${mat}:</strong> ${subCrafts[mat]}</p>`;
+                    resultHtml += `<p><strong>${mat}:</strong> ${formatNumber(subCrafts[mat])}</p>`;
                 }
                 resultHtml += `</div>`;
             }
@@ -272,7 +272,7 @@
                 resultHtml += `<div class="result-block">
                                  <h3>Basic Materials Spent</h3>`;
                 for (const mat of sortedRawMaterials) {
-                    resultHtml += `<p><strong>${mat}:</strong> ${rawMaterials[mat]}</p>`;
+                    resultHtml += `<p><strong>${mat}:</strong> ${formatNumber(rawMaterials[mat])}</p>`;
                 }
                 resultHtml += `</div>`;
             }
