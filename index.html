@@ -186,7 +186,7 @@
                 resultsDiv.innerHTML = `<p>Você já atingiu ou superou o nível desejado!</p>`;
                 return;
             }
-
+            
             const xpNeeded = targetXp - currentXp;
             const selectedItem = selectedProfData.find(item => item.Name === selectedItemName);
 
@@ -197,7 +197,7 @@
 
             function calculateDetails(itemName, craftsNeeded, selectedProfKey, currentEfficiency) {
                 const item = allData[selectedProfKey].find(i => i.Name === itemName);
-                if (!item) return { rawMaterials: {}, subCrafts: {}, subItemTimes: {}, totalTime: 0 };
+                if (!item) return { rawMaterials: {}, subCrafts: {}, subItemTimes: {}, totalTime: 0, totalXp: 0 };
                 
                 const rawMaterials = {};
                 const subCrafts = {};
@@ -206,6 +206,7 @@
                 const baseTime = parseTime(item['Base Time']);
                 const effectiveTime = baseTime * (1 - currentEfficiency / 100);
                 let totalTime = effectiveTime * craftsNeeded;
+                let totalXp = item['Skill Exp'] * craftsNeeded;
 
                 for (let i = 1; i <= 4; i++) {
                     const reqName = item[`Requirement ${i}`];
@@ -218,6 +219,7 @@
                             const subResult = calculateDetails(reqName, reqAmount * craftsNeeded, selectedProfKey, currentEfficiency);
                             subItemTimes[reqName] = (subItemTimes[reqName] || 0) + subResult.totalTime;
                             totalTime += subResult.totalTime;
+                            totalXp += subResult.totalXp;
                             
                             for (const mat in subResult.rawMaterials) {
                                 rawMaterials[mat] = (rawMaterials[mat] || 0) + subResult.rawMaterials[mat];
@@ -230,22 +232,33 @@
                         }
                     }
                 }
-                return { rawMaterials, subCrafts, subItemTimes, totalTime };
+                return { rawMaterials, subCrafts, subItemTimes, totalTime, totalXp };
             }
 
-            const totalXpPerCraft = selectedItem['Skill Exp'];
-            const craftsNeeded = Math.ceil(xpNeeded / totalXpPerCraft);
+            const { rawMaterials, subCrafts, subItemTimes, totalTime, totalXp } = calculateDetails(selectedItemName, 1, selectedProf, efficiency);
+            const craftsNeeded = Math.ceil(xpNeeded / totalXp);
 
-            const { rawMaterials, subCrafts, subItemTimes, totalTime } = calculateDetails(selectedItemName, craftsNeeded, selectedProf, efficiency);
-            
-            const formattedTotalTime = formatTime(totalTime);
-            const sortedSubCrafts = Object.keys(subCrafts).sort();
-            const sortedRawMaterials = Object.keys(rawMaterials).sort();
+            const totalXpFinal = totalXp * craftsNeeded;
+            const totalTimeFinal = totalTime * craftsNeeded;
+            const finalRawMaterials = {};
+            const finalSubCrafts = {};
+
+            for (const mat in rawMaterials) {
+                finalRawMaterials[mat] = rawMaterials[mat] * craftsNeeded;
+            }
+            for (const sub in subCrafts) {
+                finalSubCrafts[sub] = subCrafts[sub] * craftsNeeded;
+            }
+
+            const formattedTotalTime = formatTime(totalTimeFinal);
+            const sortedSubCrafts = Object.keys(finalSubCrafts).sort();
+            const sortedRawMaterials = Object.keys(finalRawMaterials).sort();
             
             let resultHtml = `<div class="result-block">
                                 <h3>Results</h3>
                                 <p><strong>XP Required:</strong> ${formatNumber(xpNeeded)}</p>
-                                <p><strong>Total XP ${selectedItemName}:</strong> <span class="xp-highlight">${formatNumber(totalXpPerCraft)}</span></p>
+                                <p><strong>Total XP (All crafts):</strong> <span class="xp-highlight">${formatNumber(totalXpFinal)}</span></p>
+                                <p><strong>XP per ${selectedItemName}:</strong> ${formatNumber(totalXp)}</p>
                                 <p><strong>Amount:</strong> ${formatNumber(craftsNeeded)} x ${selectedItemName}</p>
                               </div>`;
 
@@ -261,9 +274,13 @@
             }
             
             for (const mat of sortedSubCrafts) {
-                const subTime = subItemTimes[mat] || 0;
-                if (subTime > 0) {
-                    resultHtml += `<p><strong>Time for ${mat}:</strong> <span class="time-highlight">${formatTime(subTime)}</span></p>`;
+                const subItem = allData[selectedProf].find(i => i.Name === mat);
+                const subItemBaseTime = parseTime(subItem['Base Time']);
+                const subItemEffectiveTime = subItemBaseTime * (1 - efficiency / 100);
+                const subItemTotalTime = subItemEffectiveTime * finalSubCrafts[mat];
+
+                if (subItemTotalTime > 0) {
+                    resultHtml += `<p><strong>Time for ${mat}:</strong> <span class="time-highlight">${formatTime(subItemTotalTime)}</span></p>`;
                 }
             }
             
@@ -274,7 +291,7 @@
                 resultHtml += `<div class="result-block">
                                  <h3>Sub-items to be done</h3>`;
                 for (const mat of sortedSubCrafts) {
-                    resultHtml += `<p><strong>${mat}:</strong> ${formatNumber(subCrafts[mat])}</p>`;
+                    resultHtml += `<p><strong>${mat}:</strong> ${formatNumber(finalSubCrafts[mat])}</p>`;
                 }
                 resultHtml += `</div>`;
             }
@@ -283,7 +300,7 @@
                 resultHtml += `<div class="result-block">
                                  <h3>Basic Materials Spent</h3>`;
                 for (const mat of sortedRawMaterials) {
-                    resultHtml += `<p><strong>${mat}:</strong> ${formatNumber(rawMaterials[mat])}</p>`;
+                    resultHtml += `<p><strong>${mat}:</strong> ${formatNumber(finalRawMaterials[mat])}</p>`;
                 }
                 resultHtml += `</div>`;
             }
