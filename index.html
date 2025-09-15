@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Calculadora de XP — Multiprofissão</title>
+<title>XP Calculator — Multiprofession</title>
 <link rel="icon" href="" />
 <style>
   :root{
@@ -76,7 +76,6 @@
   button.primary:active{transform:translateY(1px)}
   .small{font-size:0.85rem;color:var(--muted)}
 
-  /* right column results */
   .results{
     display:flex;
     flex-direction:column;
@@ -100,57 +99,54 @@
 
   .credits{margin-top:8px;text-align:center;color:var(--muted);font-size:0.85rem}
 
-  /* responsive */
   @media (max-width:980px){
     .wrap{grid-template-columns:1fr; padding-bottom:18px}
   }
-  /* tiny touches */
+
   .small-muted{color:var(--muted);font-size:0.85rem}
-  .highlight{color:var(--accent);font-weight:800}
   .pill{display:inline-block;background:var(--glass);padding:6px 10px;border-radius:999px;font-size:0.85rem}
-  ul{padding-left:16px;margin:6px 0}
 </style>
 </head>
 <body>
   <main class="wrap">
     <section class="card" aria-labelledby="title">
       <header>
-        <h1 id="title">XP CALCULATOR — Multiprofissão</h1>
-        <p class="small-muted">Escolha a profissão, item e calcule quanto falta e quanto vai gastar.</p>
+        <h1 id="title">XP CALCULATOR — Multiprofession</h1>
+        <p class="small-muted">Choose profession, item and calculate how much XP and resources you need.</p>
       </header>
 
       <div style="margin-top:14px">
         <div class="form-row">
-          <label for="profSelect">Profissão</label>
-          <select id="profSelect" aria-label="Profissão"></select>
+          <label for="profSelect">Profession</label>
+          <select id="profSelect" aria-label="Profession"></select>
         </div>
 
         <div class="grid-two">
           <div class="form-row">
-            <label for="currentXp">XP atual</label>
-            <input id="currentXp" type="number" min="0" value="0" oninput="updateItemList()" aria-label="XP atual">
+            <label for="currentXp">Current XP</label>
+            <input id="currentXp" type="number" min="0" value="0" oninput="updateItemList()" aria-label="Current XP">
           </div>
 
           <div class="form-row">
-            <label for="targetLvl">Nível alvo</label>
-            <input id="targetLvl" type="number" min="1" value="1" aria-label="Nível alvo">
+            <label for="targetLvl">Target Level</label>
+            <input id="targetLvl" type="number" min="1" value="1" aria-label="Target Level">
           </div>
         </div>
 
         <div class="grid-two">
           <div class="form-row">
-            <label for="efficiency">Eficiência (%)</label>
-            <input id="efficiency" type="number" min="0" max="99" value="0" aria-label="Eficiência">
+            <label for="efficiency">Efficiency (%)</label>
+            <input id="efficiency" type="number" min="0" max="99" value="0" aria-label="Efficiency">
           </div>
 
           <div class="form-row">
-            <label for="itemSelect">Item (disponível no seu nível)</label>
+            <label for="itemSelect">Item (available at your level)</label>
             <select id="itemSelect" aria-label="Item"></select>
           </div>
         </div>
 
         <div style="display:flex;gap:10px;align-items:center">
-          <button class="primary" onclick="calculate()">Calcular</button>
+          <button class="primary" onclick="calculate()">Calculate</button>
         </div>
 
         <div class="credits">
@@ -162,7 +158,7 @@
             <input type="hidden" name="business" value="JQSHTGU3WZA5Y" />
             <input type="hidden" name="no_recurring" value="0" />
             <input type="hidden" name="currency_code" value="BRL" />
-            <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" border="0" name="submit" title="Doar via PayPal" alt="Doar com PayPal" />
+            <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" border="0" name="submit" title="Donate with PayPal" alt="Donate with PayPal" />
             <img alt="" border="0" src="https://www.paypal.com/en_BR/i/scr/pixel.gif" width="1" height="1" />
           </form>
         </div>
@@ -171,39 +167,37 @@
 
     <aside class="card results" aria-live="polite">
       <div class="result-block">
-        <h3>Resumo</h3>
-        <p id="summaryXp" class="muted">Preencha e clique em <strong>Calcular</strong>.</p>
+        <h3>Summary</h3>
+        <p id="summaryXp" class="muted">Fill the fields and click <strong>Calculate</strong>.</p>
         <p id="summaryMore" class="muted" style="margin-top:8px"></p>
       </div>
 
       <div id="timeBlock" class="result-block" style="display:none">
-        <h3>Tempo de criação</h3>
+        <h3>Crafting Time</h3>
         <div id="timeList" class="muted"></div>
       </div>
 
       <div id="subcraftBlock" class="result-block" style="display:none">
-        <h3>Sub-itens (crafts)</h3>
+        <h3>Sub-items (crafts)</h3>
         <div id="subList" class="muted"></div>
       </div>
 
       <div id="rawBlock" class="result-block" style="display:none">
-        <h3>Materiais básicos</h3>
+        <h3>Raw Materials</h3>
         <div id="rawList" class="muted"></div>
       </div>
     </aside>
   </main>
 
-  <!-- Dados dos itens — mantenha o seu arquivo externo -->
   <script src="./itensimport.js"></script>
 
   <script>
-    // --- dados de nível (mantive a sua tabela) ---
+    // Level XP table
     const XP_PER_LEVEL = [
-      0, 84, 192, 324, 480, 645, 820, 1005, 1200, 1407, 1735, 2082, 2449, 2838, 3249, 3684, 4144, 4631, 5146, 5691, 6460, 7281, 8160, 9101, 10109, 11191, 12353, 13603, 14949, 16400, 18455, 20675, 23076, 25675, 28492, 31549, 34870, 38482, 42415, 46702, 52583, 58662, 64933, 71390, 78026, 84833, 91802, 98923, 106186, 114398, 123502, 132734, 142077, 151515, 161029, 170602, 180216, 189852, 199491, 209115, 220417, 232945, 246859, 262341, 279598, 298871, 320434, 344603, 371744, 402278, 441971, 486789, 537487, 594941, 660170, 734360, 818896, 915396, 1025752, 1152182, 1316749, 1492835, 1681248, 1882849, 2098562, 2329375, 2576345, 2840603, 3123359, 3425908, 3749636, 4269287, 4827911, 5428432, 6073992, 6767969, 7513995, 8315973, 9178099
+      0,84,192,324,480,645,820,1005,1200,1407,1735,2082,2449,2838,3249,3684,4144,4631,5146,5691,6460,7281,8160,9101,10109,11191,12353,13603,14949,16400,18455,20675,23076,25675,28492,31549,34870,38482,42415,46702,52583,58662,64933,71390,78026,84833,91802,98923,106186,114398,123502,132734,142077,151515,161029,170602,180216,189852,199491,209115,220417,232945,246859,262341,279598,298871,320434,344603,371744,402278,441971,486789,537487,594941,660170,734360,818896,915396,1025752,1152182,1316749,1492835,1681248,1882849,2098562,2329375,2576345,2840603,3123359,3425908,3749636,4269287,4827911,5428432,6073992,6767969,7513995,8315973,9178099
     ];
 
-    // util
-    function formatNumber(n){ return (typeof n === 'number') ? n.toLocaleString('pt-BR') : n; }
+    function formatNumber(n){ return (typeof n === 'number') ? n.toLocaleString('en-US') : n; }
 
     function getLevelFromXp(xp){
       let currentLevel = 1;
@@ -213,7 +207,6 @@
       return currentLevel;
     }
 
-    // elementos
     const profSelect = document.getElementById('profSelect');
     const itemSelect = document.getElementById('itemSelect');
     const currentXpInput = document.getElementById('currentXp');
@@ -226,10 +219,9 @@
     const rawBlock = document.getElementById('rawBlock');
     const rawList = document.getElementById('rawList');
 
-    // Popula profissões quando allData carregado
     function populateProfessions(){
       if(typeof allData !== 'object'){
-        profSelect.innerHTML = '<option disabled>Dados não encontrados (itensimport.js)</option>';
+        profSelect.innerHTML = '<option disabled>Data not found (itensimport.js)</option>';
         return;
       }
       profSelect.innerHTML = '';
@@ -242,7 +234,6 @@
       updateItemList();
     }
 
-    // atualiza lista de itens com base no nível atual do usuário
     function updateItemList(){
       const selectedProf = profSelect.value;
       const currentXp = parseInt(currentXpInput.value) || 0;
@@ -250,7 +241,6 @@
 
       itemSelect.innerHTML = '';
       const items = (allData && allData[selectedProf]) ? allData[selectedProf] : [];
-
       const filtered = items.filter(it => (typeof it.Level === 'number') ? it.Level <= currentLevel : true);
 
       if(filtered.length){
@@ -262,16 +252,14 @@
         });
       } else {
         const opt = document.createElement('option');
-        opt.textContent = 'Nenhum item disponível para este nível';
+        opt.textContent = 'No items available at this level';
         opt.disabled = true;
         itemSelect.appendChild(opt);
       }
     }
 
-    // conversão de tempo do formato "X s" / "X m" / "X h" para segundos
     function parseTime(timeString){
       if(!timeString) return 0;
-      // formatos como "10 s", "2 m", "1 h", "1 d" ou "1 month", etc
       const s = String(timeString).trim();
       const match = s.match(/^(\d+)\s*(s|sec|second|m|min|minute|h|hour|d|day|mo|month|y|year)/i);
       if(!match) return parseInt(s) || 0;
@@ -282,7 +270,7 @@
         case 'm': case 'min': case 'minute': return val * 60;
         case 'h': case 'hour': return val * 3600;
         case 'd': case 'day': return val * 86400;
-        case 'mo': case 'month': case 'month(s)': return val * 2592000;
+        case 'mo': case 'month': return val * 2592000;
         case 'y': case 'year': return val * 31536000;
         default: return val;
       }
@@ -306,7 +294,6 @@
       return parts.join(' ');
     }
 
-    // cálculo recursivo: retorna materias brutas, subcrafts, tempo e xp
     function calculateDetails(profKey, itemName, craftsNeeded, efficiencyPercent){
       const profItems = allData[profKey];
       const item = profItems.find(i => i.Name === itemName);
@@ -322,18 +309,14 @@
       totalTime += effectiveTime * craftsNeeded;
       totalXp += (Number(item['Skill Exp']) || 0) * craftsNeeded;
 
-      // percorre requisitos (até 4)
       for(let i=1;i<=4;i++){
         const reqName = item[`Requirement ${i}`];
         const reqAmount = Number(item[`Requirement ${i} Amount`]) || 0;
         if(reqName && reqAmount){
-          // se o requisito é um craft dentro da mesma profissão
           const isSub = profItems.some(pi => pi.Name === reqName);
           if(isSub){
             subCrafts[reqName] = (subCrafts[reqName] || 0) + reqAmount * craftsNeeded;
-            // calcula recursivamente
             const subResult = calculateDetails(profKey, reqName, reqAmount * craftsNeeded, efficiencyPercent);
-            // agrega
             totalTime += subResult.totalTime;
             totalXp += subResult.totalXp;
             for(const m in subResult.rawMaterials) rawMaterials[m] = (rawMaterials[m]||0) + subResult.rawMaterials[m];
@@ -343,106 +326,52 @@
           }
         }
       }
-
       return { rawMaterials, subCrafts, totalTime, totalXp };
     }
 
     function calculate(){
-      // leituras
       const currentXp = parseInt(document.getElementById('currentXp').value) || 0;
       const targetLvl = parseInt(document.getElementById('targetLvl').value) || 1;
       const efficiency = parseFloat(document.getElementById('efficiency').value) || 0;
       const profKey = profSelect.value;
       const itemName = itemSelect.value;
 
-      // validações básicas
       if(!profKey || !allData || !allData[profKey]){
-        resultsSummary.textContent = 'Profissão inválida ou dados não carregados.';
+        resultsSummary.textContent = 'Invalid profession or data not loaded.';
         return;
       }
       if(targetLvl < 1 || targetLvl > XP_PER_LEVEL.length){
-        resultsSummary.innerHTML = `Nível alvo inválido. (1 - ${XP_PER_LEVEL.length})`;
+        resultsSummary.innerHTML = `Invalid target level. (1 - ${XP_PER_LEVEL.length})`;
         return;
       }
 
       const targetXp = XP_PER_LEVEL[targetLvl - 1];
       if(targetXp <= currentXp){
-        resultsSummary.innerHTML = `Você já tem XP suficiente para o nível ${targetLvl}.`;
+        resultsSummary.innerHTML = `You already have enough XP for level ${targetLvl}.`;
         timeBlock.style.display = 'none'; subcraftBlock.style.display='none'; rawBlock.style.display='none';
         return;
       }
 
       const xpNeeded = targetXp - currentXp;
-
       const profItems = allData[profKey];
       const selectedItem = profItems.find(i => i.Name === itemName);
       if(!selectedItem){
-        resultsSummary.textContent = 'Item inválido.';
+        resultsSummary.textContent = 'Invalid item.';
         return;
       }
 
-      // Primeiro calcula os detalhes para 1 unidade (incluindo subcrafts)
       const singleDetail = calculateDetails(profKey, itemName, 1, efficiency);
       if(singleDetail.totalXp <= 0){
-        resultsSummary.textContent = 'XP por item é zero — verifique os dados do item.';
+        resultsSummary.textContent = 'XP per item is zero — check item data.';
         return;
       }
 
       const craftsNeeded = Math.ceil(xpNeeded / singleDetail.totalXp);
-      // Recalcula tudo multiplicado pela quantidade final
       const finalDetail = calculateDetails(profKey, itemName, craftsNeeded, efficiency);
 
       const totalXpFinal = finalDetail.totalXp;
       const totalTimeFinal = finalDetail.totalTime;
-      // agrega finais
       const finalRaw = finalDetail.rawMaterials;
       const finalSubs = finalDetail.subCrafts;
 
-      // monta saída
-      resultsSummary.innerHTML = `<strong>XP faltante:</strong> ${formatNumber(xpNeeded)} — <strong>Itens necessários:</strong> ${formatNumber(craftsNeeded)} x ${itemName} (cada um dá ${formatNumber(singleDetail.totalXp)} XP)`;
-      resultsMore.innerHTML = `<span class="small-muted">Nível atual estimado: ${getLevelFromXp(currentXp)} — Nível alvo: ${targetLvl}</span>`;
-
-      // tempo
-      timeBlock.style.display = 'block';
-      timeList.innerHTML = `<p><strong>Tempo total estimado:</strong> ${formatTime(totalTimeFinal)}</p>`;
-
-      // detalhe por sub-item
-      const subsKeys = Object.keys(finalSubs).sort();
-      if(subsKeys.length){
-        subcraftBlock.style.display = 'block';
-        subList.innerHTML = subsKeys.map(k => `<p>${k}: ${formatNumber(finalSubs[k])}</p>`).join('');
-      } else {
-        subcraftBlock.style.display = 'none';
-        subList.innerHTML = '';
-      }
-
-      // materias cruas
-      const matsKeys = Object.keys(finalRaw).sort();
-      if(matsKeys.length){
-        rawBlock.style.display = 'block';
-        rawList.innerHTML = matsKeys.map(k => `<p>${k}: ${formatNumber(finalRaw[k])}</p>`).join('');
-      } else {
-        rawBlock.style.display = 'none';
-        rawList.innerHTML = '';
-      }
-    }
-
-    // eventos
-    profSelect.addEventListener('change', updateItemList);
-    currentXpInput.addEventListener('change', updateItemList);
-
-    // quando o allData estiver disponível (itensimport.js carrega antes deste script),
-    // popula profissões. Se itensimport carregar depois, tenta novamente.
-    function tryPopulate(retries=0){
-      if(typeof allData === 'object'){
-        populateProfessions();
-      } else if(retries < 20){
-        setTimeout(()=>tryPopulate(retries+1), 100);
-      } else {
-        profSelect.innerHTML = '<option disabled>Não foi possível carregar dados</option>';
-      }
-    }
-    tryPopulate();
-  </script>
-</body>
-</html>
+      resultsSummary.innerHTML = `<strong>XP needed:</strong> ${formatNumber(xpNeeded)} —
