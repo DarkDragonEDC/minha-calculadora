@@ -37,7 +37,7 @@
     padding:18px;
     box-shadow: 0 6px 30px rgba(2,6,23,0.6);
     border:1px solid rgba(255,255,255,0.03);
-    text-align: center; /* CENTRALIZA O CONTEÚDO DENTRO DO CARD */
+    text-align: center;
   }
 
   header.card h1{
@@ -57,7 +57,7 @@
     color: #e6eef8;
     font-size:0.95rem;
     outline:none;
-    text-align: center; /* CENTRALIZA O TEXTO DIGITADO NO CAMPO */
+    text-align: center;
   }
   select option {
     color: var(--panel);
@@ -67,7 +67,7 @@
   input::placeholder {
     color: var(--muted);
     opacity: 0.6;
-    text-align: center; /* CENTRALIZA O TEXTO DO PLACEHOLDER */
+    text-align: center;
   }
 
   .form-row{margin-bottom:12px}
@@ -96,7 +96,6 @@
     padding:14px;
     border-radius:10px;
     border:1px solid rgba(255,255,255,0.02);
-    /* A PROPRIEDADE text-align: left; FOI REMOVIDA AQUI PARA CENTRALIZAR O TEXTO */
   }
   .result-block h3{margin:0 0 8px 0;font-size:1rem}
   .result-block p{margin:6px 0;color:#dbeafe}
@@ -115,8 +114,24 @@
 
   .credits{margin-top:8px;text-align:center;color:var(--muted);font-size:0.85rem}
 
-  @media (max-width:980px){
-    .wrap{grid-template-columns:1fr; padding-bottom:18px}
+  /* MEDIA QUERIES para responsividade */
+  @media (max-width: 980px) {
+    .wrap {
+      grid-template-columns: 1fr; /* Muda para uma única coluna */
+    }
+  }
+
+  @media (max-width: 500px) {
+    body {
+      padding: 12px;
+    }
+    .grid-two,
+    .grid-two--compact {
+      grid-template-columns: 1fr; /* Muda os grids internos para uma única coluna */
+    }
+    .card {
+      padding: 12px;
+    }
   }
 
   .small-muted{color:var(--muted);font-size:0.85rem}
