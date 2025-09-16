@@ -3380,5 +3380,106 @@ const allData = {
                 "Requirement 3": "Astral Basket Recipe",
                 "Requirement 3 Amount": 1
             }
+        ],
+                "cooking": [
+            {
+                "Name": "Grilled Millow",
+                "Level": 1,
+                "Base Time": "15 s",
+                "Skill Exp": 1,
+                "Vendor Price": "6 ouros",
+                "Requirement 1": "Minnow",
+                "Requirement 1 Amount": 2,
+                "Requirement 2": "Coal Ore",
+                "Requirement 2 Amount": 1
+            },
+            {
+                "Name": "Roasted Snapper",
+                "Level": 10,
+                "Base Time": "20 s",
+                "Skill Exp": 2,
+                "Vendor Price": "10 ouros",
+                "Requirement 1": "Snapper",
+                "Requirement 1 Amount": 2,
+                "Requirement 2": "Coal Ore",
+                "Requirement 2 Amount": 2
+            },
+            {
+                "Name": "Spicy Barracuda",
+                "Level": 20,
+                "Base Time": "30 s",
+                "Skill Exp": 4,
+                "Vendor Price": "21 ouros",
+                "Requirement 1": "Barracuda",
+                "Requirement 1 Amount": 2,
+                "Requirement 2": "Coal Ore",
+                "Requirement 2 Amount": 3
+            },
+            {
+                "Name": "Frosted Sawfish Filet",
+                "Level": 30,
+                "Base Time": "40 s",
+                "Skill Exp": 7,
+                "Vendor Price": "31 ouros",
+                "Requirement 1": "Sawfish",
+                "Requirement 1 Amount": 2,
+                "Requirement 2": "Coal Ore",
+                "Requirement 2 Amount": 4
+            },
+            {
+                "Name": "Shark Stew",
+                "Level": 40,
+                "Base Time": "50 s",
+                "Skill Exp": 11,
+                "Vendor Price": "54 ouros",
+                "Requirement 1": "Shark",
+                "Requirement 1 Amount": 2,
+                "Requirement 2": "Coal Ore",
+                "Requirement 2 Amount": 5
+            },
+            {
+                "Name": "Angler Soup",
+                "Level": 50,
+                "Base Time": "60 s",
+                "Skill Exp": 16,
+                "Vendor Price": "70 ouros",
+                "Requirement 1": "Angler",
+                "Requirement 1 Amount": 2,
+                "Requirement 2": "Coal Ore",
+                "Requirement 2 Amount": 6
+            },
+            {
+                "Name": "Spiced Sea Wyrm",
+                "Level": 60,
+                "Base Time": "70 s",
+                "Skill Exp": 22,
+                "Vendor Price": "103 ouros",
+                "Requirement 1": "Sea Wyrm",
+                "Requirement 1 Amount": 2,
+                "Requirement 2": "Coal Ore",
+                "Requirement 2 Amount": 7
+            },
+            {
+                "Name": "Stormray Fillet",
+                "Level": 70,
+                "Base Time": "80 s",
+                "Skill Exp": 29,
+                "Vendor Price": "125 ouros",
+                "Requirement 1": "Stormray",
+                "Requirement 1 Amount": 2,
+                "Requirement 2": "Coal Ore",
+                "Requirement 2 Amount": 8
+            },
+            {
+                "Name": "Leviathan Roast",
+                "Level": 80,
+                "Base Time": "90 s",
+                "Skill Exp": 37,
+                "Vendor Price": "125 ouros",
+                "Requirement 1": "Leviathan",
+                "Requirement 1 Amount": 2,
+                "Requirement 2": "Coal Ore",
+                "Requirement 2 Amount": 9
+            }
         ]
-        };
+    };
