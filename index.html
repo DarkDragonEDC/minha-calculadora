@@ -56,6 +56,17 @@
     font-size:0.95rem;
     outline:none;
   }
+  select option {
+    color: var(--panel); /* Define a cor do texto para escuro */
+    background: var(--bg); /* Define um fundo claro para garantir a legibilidade */
+  }
+  
+  /* Estilo para o placeholder */
+  input::placeholder {
+    color: var(--muted);
+    opacity: 0.6;
+  }
+
   .form-row{margin-bottom:12px}
 
   button.primary{
@@ -127,20 +138,19 @@
         <div class="grid-two">
           <div class="form-row">
             <label for="currentXp">Current XP</label>
-            <input id="currentXp" type="number" min="0" value="0" oninput="updateItemList()" aria-label="Current XP">
+            <input id="currentXp" type="number" min="0" value="" placeholder="Enter your current XP" oninput="updateItemList()" aria-label="Current XP">
           </div>
 
           <div class="form-row">
             <label for="targetLvl">Target Level</label>
-            <input id="targetLvl" type="number" min="1" value="1" aria-label="Target Level">
+            <input id="targetLvl" type="number" min="1" value="" placeholder="Enter the desired lvl" aria-label="Target Level">
           </div>
         </div>
 
-        <!-- compact grid: efficiency smaller, item larger -->
         <div class="grid-two grid-two--compact">
           <div class="form-row">
             <label for="efficiency">Efficiency (%)</label>
-            <input id="efficiency" type="number" min="0" max="99" value="0" aria-label="Efficiency">
+            <input id="efficiency" type="number" min="0" max="99" value="" placeholder="Ur total Eff" aria-label="Efficiency">
           </div>
 
           <div class="form-row">
@@ -246,7 +256,7 @@
 
       itemSelect.innerHTML = '';
       const items = (allData && allData[selectedProf]) ? allData[selectedProf] : [];
-      const filtered = items.filter(it => (typeof it.Level === 'number') ? it.Level <= currentLevel : true);
+      const filtered = items.filter(it => (typeof it.Level === 'number')? it.Level <= currentLevel : true);
 
       if(filtered.length){
         filtered.forEach(item => {
@@ -378,12 +388,35 @@
       const totalTimeFinal = finalDetail.totalTime;
       const finalRaw = finalDetail.rawMaterials;
       const finalSubs = finalDetail.subCrafts;
+      
+      // Calcula o tempo do item principal
+      const baseTimeMainItem = parseTime(selectedItem['Base Time']);
+      const effectiveTimeMainItem = baseTimeMainItem * (1 - efficiency/100);
+      const mainItemTotalTime = effectiveTimeMainItem * craftsNeeded;
 
-      resultsSummary.innerHTML = `<strong>XP needed:</strong> ${formatNumber(xpNeeded)} — <strong>Items required:</strong> ${formatNumber(craftsNeeded)} x ${itemName} (each gives ${formatNumber(singleDetail.totalXp)} XP)`;
+      // Constrói a lista de tempos de sub-itens
+      let subItemsTimeHtml = '';
+      const sortedSubKeys = Object.keys(finalSubs).sort();
+      if(sortedSubKeys.length > 0) {
+        for (const subName of sortedSubKeys) {
+          const subItem = profItems.find(i => i.Name === subName);
+          if (subItem) {
+            const subBaseTime = parseTime(subItem['Base Time']);
+            const subEffectiveTime = subBaseTime * (1 - efficiency / 100);
+            const subCraftsNeeded = finalSubs[subName];
+            const subTotalTime = subEffectiveTime * subCraftsNeeded;
+            subItemsTimeHtml += `<p><strong>${subName}:</strong> ${formatTime(subTotalTime)}</p>`;
+          }
+        }
+      }
+
+      resultsSummary.innerHTML = `<strong>XP needed:</strong> ${formatNumber(xpNeeded)}<br><strong>Items required:</strong> ${formatNumber(craftsNeeded)} x ${itemName}<br><span class="small-muted">(each gives ${formatNumber(singleDetail.totalXp)} XP)</span>`;
       resultsMore.innerHTML = `<span class="small-muted">Estimated current level: ${getLevelFromXp(currentXp)} — Target level: ${targetLvl}</span>`;
 
       timeBlock.style.display = 'block';
-      timeList.innerHTML = `<p><strong>Total estimated time:</strong> ${formatTime(totalTimeFinal)}</p>`;
+      timeList.innerHTML = `<p><strong>${itemName}:</strong> ${formatTime(mainItemTotalTime)}</p>
+                            ${subItemsTimeHtml}
+                            <p><strong>Total estimated time:</strong> ${formatTime(totalTimeFinal)}</p>`;
 
       const subsKeys = Object.keys(finalSubs).sort();
       if(subsKeys.length){
