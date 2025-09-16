@@ -4151,5 +4151,70 @@ const allData = {
                 "Requirement 3": "Premium Flask",
                 "Requirement 3 Amount": 1
             }
+        ],
+        "dungeon": [
+            {
+                "Name": "Whispering Grove",
+                "Level": 1,
+                "Base Time": "1800 s",
+                "Skill Exp": 120,
+                "Requirement 1": "Whispering Grove Dungeon Ticket"
+            },
+            {
+                "Name": "Sands Of Eternity",
+                "Level": 10,
+                "Base Time": "1800 s",
+                "Skill Exp": 180,
+                "Requirement 1": "Sands Of Eternity Dungeon Ticket"
+            },
+            {
+                "Name": "Frostbite Hollow",
+                "Level": 20,
+                "Base Time": "1800 s",
+                "Skill Exp": 240,
+                "Requirement 1": "Frostbite Hollow Dungeon Ticket"
+            },
+            {
+                "Name": "Obsidian Spire",
+                "Level": 30,
+                "Base Time": "1800 s",
+                "Skill Exp": 315,
+                "Requirement 1": "Obsidian Spire Dungeon Ticket"
+            },
+            {
+                "Name": "Coralspire Depths",
+                "Level": 40,
+                "Base Time": "1800 s",
+                "Skill Exp": 396,
+                "Requirement 1": "Coralspire Depths Dungeon Ticket"
+            },
+            {
+                "Name": "Umbral Rift",
+                "Level": 50,
+                "Base Time": "1800 s",
+                "Skill Exp": 480,
+                "Requirement 1": "Umbral Rift Dungeon Ticket"
+            },
+            {
+                "Name": "Abyss of Unmaking",
+                "Level": 60,
+                "Base Time": "1800 s",
+                "Skill Exp": 565,
+                "Requirement 1": "Abyss of Unmaking Dungeon Ticket"
+            },
+            {
+                "Name": "Splinterhide Den",
+                "Level": 70,
+                "Base Time": "1800 s",
+                "Skill Exp": 652,
+                "Requirement 1": "Splinterhide Den Dungeon Ticket"
+            },
+            {
+                "Name": "Nightshound Keep",
+                "Level": 80,
+                "Base Time": "1800 s",
+                "Skill Exp": 740,
+                "Requirement 1": "Nightshound Keep Dungeon Ticket"
+            }
         ]
-};
+    };
