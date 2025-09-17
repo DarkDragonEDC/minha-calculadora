@@ -425,6 +425,21 @@ const allData = {
         "Requirement 4 Amount": 1
     },
     {
+        "Name": "Rarity Tome I",
+        "Level": 30,
+        "Base Time": "320 s",
+        "Skill Exp": 56,
+         "Vendor Price": "673 ouros",
+        "Requirement 1": "Coal Ore",
+        "Requirement 1 Amount": 3,
+        "Requirement 2": "Bog Ichor",
+        "Requirement 2 Amount": 10,
+        "Requirement 3": "Wind Shard",
+        "Requirement 3 Amount": 10,
+        "Requirement 4": "Frozen Heart",
+        "Requirement 4 Amount": 10
+    },
+    {
         "Name": "Platinum Bar",
         "Level": 40,
         "Base Time": "50 s",
@@ -743,6 +758,21 @@ const allData = {
         "Requirement 4 Amount": 1
     },
     {
+        "Name": "Rarity Tome II",
+        "Level": 60,
+        "Base Time": "560 s",
+        "Skill Exp": 176,
+        "Vendor Price": "2087 ouros",
+        "Requirement 1": "Coal Ore",
+        "Requirement 1 Amount": 6,
+        "Requirement 2": "Ember Core",
+        "Requirement 2 Amount": 10,
+        "Requirement 3": "Null Stone",
+        "Requirement 3 Amount": 10,
+        "Requirement 4": "Reef Fragment",
+        "Requirement 4 Amount": 10
+    },
+    {
         "Name": "Eternium Bar",
         "Level": 70,
         "Base Time": "80 s",
@@ -953,6 +983,21 @@ const allData = {
         "Requirement 3 Amount": 20,
         "Requirement 4": "Abyssal Leather Handle",
         "Requirement 4 Amount": 1
+    },
+    {
+        "Name": "Rarity Tome III",
+        "Level": 80,
+        "Base Time": "720 s",
+        "Skill Exp": 296,
+        "Vendor Price": "2686 ouros",
+        "Requirement 1": "Coal Ore",
+        "Requirement 1 Amount": 9,
+        "Requirement 2": "Veilcore",
+        "Requirement 2 Amount": 10,
+        "Requirement 3": "Mutated Tissue",
+        "Requirement 3 Amount": 10,
+        "Requirement 4": "Marrow Fragment",
+        "Requirement 4 Amount": 10
     }
 ],
         "leatherworking": [
