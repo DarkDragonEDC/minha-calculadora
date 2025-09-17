@@ -1122,24 +1122,24 @@ const allData = {
             "Base Time": "1440 s",
             "Skill Exp": 667,
             "Vendor Price": "2686 ouros",
-            "Requirement 1": "Coal Ore",
-            "Requirement 1 Amount": 9,
-            "Requirement 2": "Bog Ichor",
-            "Requirement 2 Amount": 2500,
-            "Requirement 3": "Veilshard",
-            "Requirement 3 Amount": 500,
-            "Requirement 4": "Nyxium Bar",
-            "Requirement 4 Amount": 40,
-            "Requirement 5": "Wind Shard",
+            "Requirement 0": "Coal Ore",
+            "Requirement 0 Amount": 9,
+            "Requirement 1": "Bog Ichor",
+            "Requirement 1 Amount": 2500,
+            "Requirement 2": "Veilshard",
+            "Requirement 2 Amount": 500,
+            "Requirement 3": "Nyxium Bar",
+            "Requirement 3 Amount": 40,
+            "Requirement 4": "Wind Shard",
+            "Requirement 4 Amount": 2500,
+            "Requirement 5": "Frozen Heart",
             "Requirement 5 Amount": 2500,
-            "Requirement 6": "Frozen Heart",
-            "Requirement 6 Amount": 2500,
-            "Requirement 7": "Premium Flux",
-            "Requirement 7 Amount": 72,
-            "Requirement 8": "Miragebloom Vial",
-            "Requirement 8 Amount": 75,
-            "Requirement 9": "Abyssal Leather Handle",
-            "Requirement 9 Amount": 1
+            "Requirement 6": "Premium Flux",
+            "Requirement 6 Amount": 72,
+            "Requirement 7": "Miragebloom Vial",
+            "Requirement 7 Amount": 75,
+            "Requirement 8": "Abyssal Leather Handle",
+            "Requirement 8 Amount": 1
         }
     ],
     "leatherworking": [
@@ -4758,4 +4758,5 @@ const allData = {
             "Skill Exp": 37
         }
     ]
+
 };
