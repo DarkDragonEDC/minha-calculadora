@@ -253,18 +253,31 @@
     const rawList = document.getElementById('rawList');
     const gatheringProfessions = ['Woodcutting', 'Mining', 'Fishing', 'Herbalism', 'Tracking', 'Gathering'];
 
-    function populateProfessions(){
-      if(typeof allData !== 'object'){
+    function populateProfessions() {
+      if (typeof allData !== 'object') {
         profSelect.innerHTML = '<option disabled>Data not found (craftsimport.js)</option>';
         return;
       }
       profSelect.innerHTML = '';
-      for (const prof in allData){
-        const opt = document.createElement('option');
-        opt.value = prof;
-        opt.textContent = prof.charAt(0).toUpperCase() + prof.slice(1);
-        profSelect.appendChild(opt);
+      const allProfessions = [];
+    
+      for (const category in allData) {
+        if (typeof allData[category] === 'object' && !Array.isArray(allData[category])) {
+          for (const profession in allData[category]) {
+            allProfessions.push(profession);
+          }
+        } else {
+          allProfessions.push(category);
+        }
       }
+    
+      allProfessions.forEach(prof => {
+        const option = document.createElement('option');
+        option.value = prof;
+        option.textContent = prof.charAt(0).toUpperCase() + prof.slice(1);
+        profSelect.appendChild(option);
+      });
+      
       updateItemList();
     }
     
@@ -285,12 +298,26 @@
       const selectedProf = profSelect.value;
       const currentXp = parseInt(currentXpInput.value) || 0;
       const currentLevel = getLevelFromXp(currentXp);
-
+    
       itemSelect.innerHTML = '';
-      const items = (allData && allData[selectedProf]) ? allData[selectedProf] : [];
-      
+      let items = [];
+    
+      for (const category in allData) {
+        if (typeof allData[category] === 'object' && !Array.isArray(allData[category])) {
+          if (allData[category][selectedProf]) {
+            items = allData[category][selectedProf];
+            break;
+          }
+        } else {
+          if (category === selectedProf) {
+            items = allData[category];
+            break;
+          }
+        }
+      }
+    
       const filtered = items.filter(it => getNumericLevel(it.Level) <= currentLevel);
-
+    
       if(filtered.length){
         filtered.forEach(item => {
           const opt = document.createElement('option');
@@ -349,15 +376,39 @@
 
     function getItemProfession(itemName) {
         for (const prof in allData) {
-            if (allData[prof].some(i => i.Name === itemName)) {
+            if (typeof allData[prof] === 'object' && !Array.isArray(allData[prof])) {
+              for (const subProf in allData[prof]) {
+                if (allData[prof][subProf].some(i => i.Name === itemName)) {
+                  return subProf;
+                }
+              }
+            } else {
+              if (allData[prof].some(i => i.Name === itemName)) {
                 return prof;
+              }
             }
         }
         return null;
     }
 
     function calculateDetails(profKey, itemName, craftsNeeded, efficiencyPercent){
-      const profItems = allData[profKey];
+      let profItems = null;
+      for (const category in allData) {
+          if (typeof allData[category] === 'object' && !Array.isArray(allData[category])) {
+              if (allData[category][profKey]) {
+                  profItems = allData[category][profKey];
+                  break;
+              }
+          } else {
+              if (category === profKey) {
+                  profItems = allData[category];
+                  break;
+              }
+          }
+      }
+
+      if(!profItems) return { rawMaterials:{}, subCrafts:{}, totalTime:0, totalXp:0 };
+      
       const item = profItems.find(i => i.Name === itemName);
       if(!item) return { rawMaterials:{}, subCrafts:{}, totalTime:0, totalXp:0 };
 
@@ -366,12 +417,9 @@
       let totalTime = 0;
       let totalXp = 0;
 
-      // Adiciona o tempo de craft APENAS se a profissão NÃO for de coleta
-      if (!gatheringProfessions.includes(profKey)) {
-          const baseTime = parseTime(item['Base Time']);
-          const effectiveTime = baseTime * (1 - (efficiencyPercent || 0)/100);
-          totalTime += effectiveTime * craftsNeeded;
-      }
+      const baseTime = parseTime(item['Base Time']);
+      const effectiveTime = baseTime * (1 - (efficiencyPercent || 0)/100);
+      totalTime += effectiveTime * craftsNeeded;
 
       totalXp += (Number(item['Skill Exp']) || 0) * craftsNeeded;
 
@@ -382,7 +430,6 @@
           const subProfKey = getItemProfession(reqName);
           
           if(subProfKey && !gatheringProfessions.includes(subProfKey)){
-            // Se o item é de uma profissão de craft, ele é um sub-item
             subCrafts[reqName] = (subCrafts[reqName] || 0) + reqAmount * craftsNeeded;
             const subResult = calculateDetails(subProfKey, reqName, reqAmount * craftsNeeded, efficiencyPercent);
             totalTime += subResult.totalTime;
@@ -390,7 +437,6 @@
             for(const m in subResult.rawMaterials) rawMaterials[m] = (rawMaterials[m]||0) + subResult.rawMaterials[m];
             for(const s in subResult.subCrafts) subCrafts[s] = (subCrafts[s]||0) + subResult.subCrafts[s];
           } else {
-            // Se o item é de coleta ou não foi encontrado, é um material bruto
             rawMaterials[reqName] = (rawMaterials[reqName]||0) + reqAmount * craftsNeeded;
           }
         }
@@ -404,8 +450,23 @@
       const efficiency = parseFloat(document.getElementById('efficiency').value) || 0;
       const profKey = profSelect.value;
       const itemName = itemSelect.value;
+      
+      let profItems = null;
+      for (const category in allData) {
+          if (typeof allData[category] === 'object' && !Array.isArray(allData[category])) {
+              if (allData[category][profKey]) {
+                  profItems = allData[category][profKey];
+                  break;
+              }
+          } else {
+              if (category === profKey) {
+                  profItems = allData[category];
+                  break;
+              }
+          }
+      }
 
-      if(!profKey || !allData || !allData[profKey]){
+      if(!profItems){
         resultsSummary.textContent = 'Invalid profession or data not loaded.';
         return;
       }
@@ -422,7 +483,6 @@
       }
 
       const xpNeeded = targetXp - currentXp;
-      const profItems = allData[profKey];
       const selectedItem = profItems.find(i => i.Name === itemName);
       if(!selectedItem){
         resultsSummary.textContent = 'Invalid item.';
@@ -444,7 +504,7 @@
       const finalSubs = finalDetail.subCrafts;
       
       const isMainItemCrafting = !gatheringProfessions.includes(profKey);
-      const mainItemTotalTime = isMainItemCrafting ? parseTime(selectedItem['Base Time']) * (1 - efficiency/100) * craftsNeeded : 0;
+      const mainItemTotalTime = singleDetail.totalTime * craftsNeeded;
 
       let subItemsTimeHtml = '';
       const sortedSubKeys = Object.keys(finalSubs).sort();
@@ -452,12 +512,27 @@
         for (const subName of sortedSubKeys) {
           const subProfKey = getItemProfession(subName);
           if (subProfKey && !gatheringProfessions.includes(subProfKey)) {
-            const subItem = allData[subProfKey].find(i => i.Name === subName);
-            const subBaseTime = parseTime(subItem['Base Time']);
-            const subEffectiveTime = subBaseTime * (1 - efficiency / 100);
-            const subCraftsNeeded = finalSubs[subName];
-            const subTotalTime = subEffectiveTime * subCraftsNeeded;
-            subItemsTimeHtml += `<p><strong>${subName}:</strong> ${formatTime(subTotalTime)}</p>`;
+            let subItem = null;
+            for (const category in allData) {
+              if (typeof allData[category] === 'object' && !Array.isArray(allData[category])) {
+                if (allData[category][subProfKey]) {
+                  subItem = allData[category][subProfKey].find(i => i.Name === subName);
+                  break;
+                }
+              } else {
+                if (category === subProfKey) {
+                  subItem = allData[category].find(i => i.Name === subName);
+                  break;
+                }
+              }
+            }
+            if(subItem) {
+                const subBaseTime = parseTime(subItem['Base Time']);
+                const subEffectiveTime = subBaseTime * (1 - efficiency / 100);
+                const subCraftsNeeded = finalSubs[subName];
+                const subTotalTime = subEffectiveTime * subCraftsNeeded;
+                subItemsTimeHtml += `<p><strong>${subName}:</strong> ${formatTime(subTotalTime)}</p>`;
+            }
           }
         }
       }
@@ -466,6 +541,8 @@
       resultsMore.innerHTML = `<span class="small-muted">Estimated current level: ${getLevelFromXp(currentXp)} — Target level: ${targetLvl}</span>`;
 
       timeBlock.style.display = 'block';
+      const timeBlockTitle = timeBlock.querySelector('h3');
+      timeBlockTitle.textContent = isMainItemCrafting ? 'Crafting Time' : 'Gathering Time';
       timeList.innerHTML = `<p><strong>${itemName}:</strong> ${formatTime(mainItemTotalTime)}</p>
                             ${subItemsTimeHtml}
                             <p><strong>Total estimated time:</strong> ${formatTime(totalTimeFinal)}</p>`;

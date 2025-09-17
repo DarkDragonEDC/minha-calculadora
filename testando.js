@@ -1,6 +1,6 @@
 const allData = {
     "Craft": {
-"Forging": [
+"forging": [
         {
             "Name": "Copper Bar",
             "Level": 1,
@@ -1143,7 +1143,7 @@ const allData = {
             "Requirement 8 Amount": 1
         }
     ],
-    "Leatherworking": [
+    "leatherworking": [
         {
             "Name": "Leather",
             "Level": 1,
@@ -1964,7 +1964,7 @@ const allData = {
             "Requirement 3 Amount": 1
         }
     ],
-    "Tailoring": [
+    "tailoring": [
         {
             "Name": "Wool Cloth",
             "Level": 1,
@@ -2785,7 +2785,7 @@ const allData = {
             "Requirement 3 Amount": 1
         }
     ],
-    "Crafting": [
+    "crafting": [
         {
             "Name": "Copper Axe",
             "Level": 1,
@@ -3569,7 +3569,7 @@ const allData = {
             "Requirement 2 Amount": 1
         }
     ],
-    "Cooking": [
+    "cooking": [
         {
             "Name": "Grilled Millow",
             "Level": 1,
@@ -3670,7 +3670,7 @@ const allData = {
             "Requirement 1 Amount": 9
         }
     ],
-    "Woodcrafting": [
+    "woodcrafting": [
         {
             "Name": "Oak Plank",
             "Level": 1,
@@ -3888,7 +3888,7 @@ const allData = {
             "Requirement 2 Amount": 1
         }
     ],
-    "Alchemy": [
+    "alchemy": [
         {
             "Name": "Whisperleaf Extract",
             "Level": 1,
@@ -4404,7 +4404,7 @@ const allData = {
             "Skill Exp": 740,
             "Requirement 0": "Nightshound Keep Dungeon Ticket"
         }
-    ],
+    ]
     },
     "Coleta": {
         "WoodCutting": [
@@ -4763,3 +4763,5 @@ const allData = {
     ]
     }
 };
+
+export default allData;
