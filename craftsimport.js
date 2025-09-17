@@ -998,6 +998,29 @@ const allData = {
         "Requirement 3 Amount": 10,
         "Requirement 4": "Marrow Fragment",
         "Requirement 4 Amount": 10
+    },
+    {
+        "Name": "Cursed Bastion Bodyarmor",
+        "Level": "T1",
+        "Base Time": "1440 s",
+        "Skill Exp": 667,
+        "Vendor Price": "2686 ouros",
+        "Requirement 1": "Coal Ore",
+        "Requirement 1 Amount": 9,
+        "Requirement 2": "Bog Ichor",
+        "Requirement 2 Amount": 2500,
+        "Requirement 3": "Veilshard",
+        "Requirement 3 Amount": 500,
+        "Requirement 4": "Nyxium Bar",
+        "Requirement 4 Amount": 40,
+        "Requirement 5": "Wind Shard",
+        "Requirement 5 Amount": 2500,
+        "Requirement 6": "Frozen Heart",
+        "Requirement 6 Amount": 2500,
+        "Requirement 7": "Premium Flux",
+        "Requirement 7 Amount": 72,
+        "Requirement 8": "Miragebloom Vial",
+        "Requirement 8 Amount": 75
     }
 ],
         "leatherworking": [

@@ -251,6 +251,7 @@
     const subList = document.getElementById('subList');
     const rawBlock = document.getElementById('rawBlock');
     const rawList = document.getElementById('rawList');
+    const gatheringProfessions = ['Woodcutting', 'Mining', 'Fishing', 'Herbalism', 'Tracking', 'Gathering'];
 
     function populateProfessions(){
       if(typeof allData !== 'object'){
@@ -266,6 +267,19 @@
       }
       updateItemList();
     }
+    
+    function getNumericLevel(level) {
+        if (typeof level === 'number') {
+            return level;
+        }
+        if (typeof level === 'string') {
+            const tier = level.toUpperCase();
+            if (tier === 'T1') return 85;
+            if (tier === 'T2') return 90;
+            if (tier === 'T3') return 95;
+        }
+        return Number.MAX_SAFE_INTEGER;
+    }
 
     function updateItemList(){
       const selectedProf = profSelect.value;
@@ -274,13 +288,19 @@
 
       itemSelect.innerHTML = '';
       const items = (allData && allData[selectedProf]) ? allData[selectedProf] : [];
-      const filtered = items.filter(it => (typeof it.Level === 'number')? it.Level <= currentLevel : true);
+      
+      const filtered = items.filter(it => getNumericLevel(it.Level) <= currentLevel);
 
       if(filtered.length){
         filtered.forEach(item => {
           const opt = document.createElement('option');
           opt.value = item.Name;
-          opt.textContent = `(Lvl ${item.Level}) ${item.Name}`;
+          
+          let levelText = `(Lvl ${item.Level})`;
+          if (item.Level === 'T1' || item.Level === 'T2' || item.Level === 'T3') {
+              levelText = `(${item.Level})`;
+          }
+          opt.textContent = `${levelText} ${item.Name}`;
           itemSelect.appendChild(opt);
         });
       } else {
@@ -327,6 +347,15 @@
       return parts.join(' ');
     }
 
+    function getItemProfession(itemName) {
+        for (const prof in allData) {
+            if (allData[prof].some(i => i.Name === itemName)) {
+                return prof;
+            }
+        }
+        return null;
+    }
+
     function calculateDetails(profKey, itemName, craftsNeeded, efficiencyPercent){
       const profItems = allData[profKey];
       const item = profItems.find(i => i.Name === itemName);
@@ -337,24 +366,31 @@
       let totalTime = 0;
       let totalXp = 0;
 
-      const baseTime = parseTime(item['Base Time']);
-      const effectiveTime = baseTime * (1 - (efficiencyPercent || 0)/100);
-      totalTime += effectiveTime * craftsNeeded;
+      // Adiciona o tempo de craft APENAS se a profissão NÃO for de coleta
+      if (!gatheringProfessions.includes(profKey)) {
+          const baseTime = parseTime(item['Base Time']);
+          const effectiveTime = baseTime * (1 - (efficiencyPercent || 0)/100);
+          totalTime += effectiveTime * craftsNeeded;
+      }
+
       totalXp += (Number(item['Skill Exp']) || 0) * craftsNeeded;
 
-      for(let i=1;i<=4;i++){
+      for(let i=1;i<=8;i++){
         const reqName = item[`Requirement ${i}`];
         const reqAmount = Number(item[`Requirement ${i} Amount`]) || 0;
         if(reqName && reqAmount){
-          const isSub = profItems.some(pi => pi.Name === reqName);
-          if(isSub){
+          const subProfKey = getItemProfession(reqName);
+          
+          if(subProfKey && !gatheringProfessions.includes(subProfKey)){
+            // Se o item é de uma profissão de craft, ele é um sub-item
             subCrafts[reqName] = (subCrafts[reqName] || 0) + reqAmount * craftsNeeded;
-            const subResult = calculateDetails(profKey, reqName, reqAmount * craftsNeeded, efficiencyPercent);
+            const subResult = calculateDetails(subProfKey, reqName, reqAmount * craftsNeeded, efficiencyPercent);
             totalTime += subResult.totalTime;
             totalXp += subResult.totalXp;
             for(const m in subResult.rawMaterials) rawMaterials[m] = (rawMaterials[m]||0) + subResult.rawMaterials[m];
             for(const s in subResult.subCrafts) subCrafts[s] = (subCrafts[s]||0) + subResult.subCrafts[s];
           } else {
+            // Se o item é de coleta ou não foi encontrado, é um material bruto
             rawMaterials[reqName] = (rawMaterials[reqName]||0) + reqAmount * craftsNeeded;
           }
         }
@@ -407,18 +443,16 @@
       const finalRaw = finalDetail.rawMaterials;
       const finalSubs = finalDetail.subCrafts;
       
-      // Calcula o tempo do item principal
-      const baseTimeMainItem = parseTime(selectedItem['Base Time']);
-      const effectiveTimeMainItem = baseTimeMainItem * (1 - efficiency/100);
-      const mainItemTotalTime = effectiveTimeMainItem * craftsNeeded;
+      const isMainItemCrafting = !gatheringProfessions.includes(profKey);
+      const mainItemTotalTime = isMainItemCrafting ? parseTime(selectedItem['Base Time']) * (1 - efficiency/100) * craftsNeeded : 0;
 
-      // Constrói a lista de tempos de sub-itens
       let subItemsTimeHtml = '';
       const sortedSubKeys = Object.keys(finalSubs).sort();
       if(sortedSubKeys.length > 0) {
         for (const subName of sortedSubKeys) {
-          const subItem = profItems.find(i => i.Name === subName);
-          if (subItem) {
+          const subProfKey = getItemProfession(subName);
+          if (subProfKey && !gatheringProfessions.includes(subProfKey)) {
+            const subItem = allData[subProfKey].find(i => i.Name === subName);
             const subBaseTime = parseTime(subItem['Base Time']);
             const subEffectiveTime = subBaseTime * (1 - efficiency / 100);
             const subCraftsNeeded = finalSubs[subName];
@@ -470,5 +504,4 @@
     tryPopulate();
   </script>
 </body>
-
 </html>
