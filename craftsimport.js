@@ -4886,6 +4886,36 @@ const allData = {
                 "Requirement 1 Amount": 4
             },
             {
+                "Name": "Oasis Platter",
+                "Level": 30,
+                "Base Time": "320 s",
+                "Skill Exp": 56,
+                "Vendor Price": "31 ouros",
+                "Requirement 0": "Coal Ore",
+                "Requirement 0 Amount": 3,
+                "Requirement 1": "Bog Ichor",
+                "Requirement 1 Amount": 10,
+                "Requirement 2": "Wind Shard",
+                "Requirement 2 Amount": 10,
+                "Requirement 3": "Frozen Heart",
+                "Requirement 3 Amount": 10
+            },
+            {
+                "Name": "Pet Exp Manual I",
+                "Level": 30,
+                "Base Time": "320 s",
+                "Skill Exp": 56,
+                "Vendor Price": "31 ouros",
+                "Requirement 0": "Coal Ore",
+                "Requirement 0 Amount": 3,
+                "Requirement 1": "Bog Ichor",
+                "Requirement 1 Amount": 20,
+                "Requirement 2": "Wind Shard",
+                "Requirement 2 Amount": 20,
+                "Requirement 3": "Frozen Heart",
+                "Requirement 3 Amount": 20
+            },
+            {
                 "Name": "Shark Stew",
                 "Level": 40,
                 "Base Time": "50 s",
@@ -4906,6 +4936,36 @@ const allData = {
                 "Requirement 0 Amount": 2,
                 "Requirement 1": "Coal Ore",
                 "Requirement 1 Amount": 6
+            },
+            {
+                "Name": "Abyss Feast",
+                "Level": 60,
+                "Base Time": "560 s",
+                "Skill Exp": 176,
+                "Vendor Price": "31 ouros",
+                "Requirement 0": "Coal Ore",
+                "Requirement 0 Amount": 6,
+                "Requirement 1": "Ember Core",
+                "Requirement 1 Amount": 10,
+                "Requirement 2": "Null Stone",
+                "Requirement 2 Amount": 10,
+                "Requirement 3": "Reef Fragment",
+                "Requirement 3 Amount": 10
+            },
+            {
+                "Name": "Pet Exp Manual II",
+                "Level": 60,
+                "Base Time": "560 s",
+                "Skill Exp": 176,
+                "Vendor Price": "31 ouros",
+                "Requirement 0": "Coal Ore",
+                "Requirement 0 Amount": 6,
+                "Requirement 1": "Ember Core",
+                "Requirement 1 Amount": 20,
+                "Requirement 2": "Null Stone",
+                "Requirement 2 Amount": 20,
+                "Requirement 3": "Reef Fragment",
+                "Requirement 3 Amount": 20
             },
             {
                 "Name": "Spiced Sea Wyrm",
@@ -4939,6 +4999,36 @@ const allData = {
                 "Requirement 0 Amount": 2,
                 "Requirement 1": "Coal Ore",
                 "Requirement 1 Amount": 9
+            },
+            {
+                "Name": "Marrow Roast",
+                "Level": 80,
+                "Base Time": "720 s",
+                "Skill Exp": 296,
+                "Vendor Price": "31 ouros",
+                "Requirement 0": "Coal Ore",
+                "Requirement 0 Amount": 9,
+                "Requirement 1": "Veil Core",
+                "Requirement 1 Amount": 10,
+                "Requirement 2": "Mutated Tissue",
+                "Requirement 2 Amount": 10,
+                "Requirement 3": "Marrow Fragment",
+                "Requirement 3 Amount": 10
+            },
+            {
+                "Name": "Pet Exp Manual III",
+                "Level": 80,
+                "Base Time": "720 s",
+                "Skill Exp": 296,
+                "Vendor Price": "31 ouros",
+                "Requirement 0": "Coal Ore",
+                "Requirement 0 Amount": 9,
+                "Requirement 1": "Veilcore",
+                "Requirement 1 Amount": 20,
+                "Requirement 2": "Mutated Tissue",
+                "Requirement 2 Amount": 20,
+                "Requirement 3": "Marrow Fragment",
+                "Requirement 3 Amount": 20
             }
         ],
         "Woodcrafting": [
