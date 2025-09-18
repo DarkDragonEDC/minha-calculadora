@@ -5129,6 +5129,21 @@ const allData = {
                 "Requirement 2 Amount": 1
             },
             {
+                "Name": "Combat Exp Charm I",
+                "Level": 30,
+                "Base Time": "320 s",
+                "Skill Exp": 56,
+                "Vendor Price": "320 ouros",
+                "Requirement 0": "Bog Ichor",
+                "Requirement 0 Amount": 20,
+                "Requirement 1": "Wind Shard",
+                "Requirement 1 Amount": 20,
+                "Requirement 2": "Frozen Heart",
+                "Requirement 2 Amount": 20,
+                "Requirement 3": "Bone Charcoal",
+                "Requirement 3 Amount": 3
+            },
+            {
                 "Name": "Ebony Plank",
                 "Level": 40,
                 "Base Time": "50 s",
@@ -5175,6 +5190,21 @@ const allData = {
                 "Requirement 1 Amount": 6,
                 "Requirement 2": "Advanced Sap",
                 "Requirement 2 Amount": 1
+            },
+            {
+                "Name": "Combat Exp Charm II",
+                "Level": 60,
+                "Base Time": "560 s",
+                "Skill Exp": 176,
+                "Vendor Price": "320 ouros",
+                "Requirement 0": "Ember Core",
+                "Requirement 0 Amount": 20,
+                "Requirement 1": "Null Stone",
+                "Requirement 1 Amount": 20,
+                "Requirement 2": "Reef Fragment",
+                "Requirement 2 Amount": 20,
+                "Requirement 3": "Bone Charcoal",
+                "Requirement 3 Amount": 6
             },
             {
                 "Name": "Dragonwood Plank",
@@ -5247,6 +5277,21 @@ const allData = {
                 "Requirement 1 Amount": 9,
                 "Requirement 2": "Premium Sap",
                 "Requirement 2 Amount": 1
+            },
+            {
+                "Name": "Combat Exp Charm III",
+                "Level": 80,
+                "Base Time": "720 s",
+                "Skill Exp": 296,
+                "Vendor Price": "320 ouros",
+                "Requirement 0": "Veilcore",
+                "Requirement 0 Amount": 20,
+                "Requirement 1": "Mutated Tissue",
+                "Requirement 1 Amount": 20,
+                "Requirement 2": "Marrow Fragment",
+                "Requirement 2 Amount": 20,
+                "Requirement 3": "Bone Charcoal",
+                "Requirement 3 Amount": 9
             }
         ],
         "Alchemy": [

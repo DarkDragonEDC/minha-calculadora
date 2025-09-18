@@ -423,7 +423,7 @@
 
       totalXp += (Number(item['Skill Exp']) || 0) * craftsNeeded;
 
-      for(let i=1;i<=8;i++){
+      for(let i=0;i<=10;i++){
         const reqName = item[`Requirement ${i}`];
         const reqAmount = Number(item[`Requirement ${i} Amount`]) || 0;
         if(reqName && reqAmount){
