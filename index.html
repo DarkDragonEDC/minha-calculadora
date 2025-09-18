@@ -375,74 +375,96 @@
     }
 
     function getItemProfession(itemName) {
-        for (const prof in allData) {
-            if (typeof allData[prof] === 'object' && !Array.isArray(allData[prof])) {
-              for (const subProf in allData[prof]) {
-                if (allData[prof][subProf].some(i => i.Name === itemName)) {
+        for (const category in allData) {
+            if (typeof allData[category] === 'object' && !Array.isArray(allData[category])) {
+              for (const subProf in allData[category]) {
+                if (allData[category][subProf].some(i => i.Name === itemName)) {
                   return subProf;
                 }
               }
             } else {
-              if (allData[prof].some(i => i.Name === itemName)) {
-                return prof;
+              if (allData[category].some(i => i.Name === itemName)) {
+                return category;
               }
             }
         }
         return null;
     }
-
+    
+    // Recursive function to calculate all details and times
     function calculateDetails(profKey, itemName, craftsNeeded, efficiencyPercent){
-      let profItems = null;
-      for (const category in allData) {
-          if (typeof allData[category] === 'object' && !Array.isArray(allData[category])) {
-              if (allData[category][profKey]) {
-                  profItems = allData[category][profKey];
-                  break;
-              }
-          } else {
-              if (category === profKey) {
-                  profItems = allData[category];
-                  break;
-              }
-          }
-      }
+        let profItems = null;
+        for (const category in allData) {
+            if (typeof allData[category] === 'object' && !Array.isArray(allData[category])) {
+                if (allData[category][profKey]) {
+                    profItems = allData[category][profKey];
+                    break;
+                }
+            } else {
+                if (category === profKey) {
+                    profItems = allData[category];
+                    break;
+                }
+            }
+        }
 
-      if(!profItems) return { rawMaterials:{}, subCrafts:{}, totalTime:0, totalXp:0 };
+        if(!profItems) return { rawMaterials:{}, subCrafts:{}, craftingTimes:{}, totalTime:0, totalXp:0 };
+        
+        const item = profItems.find(i => i.Name === itemName);
+        if(!item) return { rawMaterials:{}, subCrafts:{}, craftingTimes:{}, totalTime:0, totalXp:0 };
+
+        const rawMaterials = {};
+        const subCrafts = {};
+        const craftingTimes = {};
+        let totalTime = 0;
+        let totalXp = 0;
+
+        // Check if the item gives XP to the main profession
+        const itemProf = getItemProfession(itemName);
+        if (itemProf === profKey) {
+            const baseTime = parseTime(item['Base Time']);
+            const effectiveTime = baseTime * (1 - (efficiencyPercent || 0) / 100);
+            const thisItemTime = effectiveTime * craftsNeeded;
+            craftingTimes[itemName] = thisItemTime;
+            totalTime += thisItemTime;
+            totalXp += (Number(item['Skill Exp']) || 0) * craftsNeeded;
+        }
       
-      const item = profItems.find(i => i.Name === itemName);
-      if(!item) return { rawMaterials:{}, subCrafts:{}, totalTime:0, totalXp:0 };
+        for(let i = 0; i <= 10; i++){
+          const reqName = item[`Requirement ${i}`];
+          const reqAmount = Number(item[`Requirement ${i} Amount`]) || 0;
+          if(reqName && reqAmount){
+            const subProfKey = getItemProfession(reqName);
+            
+            if(subProfKey && !gatheringProfessions.includes(subProfKey)){
+              // This is a craftable item, so we add it to sub-crafts
+              subCrafts[reqName] = (subCrafts[reqName] || 0) + reqAmount * craftsNeeded;
 
-      const rawMaterials = {};
-      const subCrafts = {};
-      let totalTime = 0;
-      let totalXp = 0;
+              // Recursive call
+              const subResult = calculateDetails(subProfKey, reqName, reqAmount * craftsNeeded, efficiencyPercent);
+              
+              // Only accumulate time and XP if it's from the SAME profession
+              if (subProfKey === profKey) {
+                  totalTime += subResult.totalTime;
+                  totalXp += subResult.totalXp;
+                  // Merge crafting times
+                  for (const t in subResult.craftingTimes) {
+                      craftingTimes[t] = (craftingTimes[t] || 0) + subResult.craftingTimes[t];
+                  }
+              }
+              
+              for(const m in subResult.rawMaterials) rawMaterials[m] = (rawMaterials[m] || 0) + subResult.rawMaterials[m];
+              for(const s in subResult.subCrafts) subCrafts[s] = (subCrafts[s] || 0) + subResult.subCrafts[s];
 
-      const baseTime = parseTime(item['Base Time']);
-      const effectiveTime = baseTime * (1 - (efficiencyPercent || 0)/100);
-      totalTime += effectiveTime * craftsNeeded;
-
-      totalXp += (Number(item['Skill Exp']) || 0) * craftsNeeded;
-
-      for(let i=0;i<=10;i++){
-        const reqName = item[`Requirement ${i}`];
-        const reqAmount = Number(item[`Requirement ${i} Amount`]) || 0;
-        if(reqName && reqAmount){
-          const subProfKey = getItemProfession(reqName);
-          
-          if(subProfKey && !gatheringProfessions.includes(subProfKey)){
-            subCrafts[reqName] = (subCrafts[reqName] || 0) + reqAmount * craftsNeeded;
-            const subResult = calculateDetails(subProfKey, reqName, reqAmount * craftsNeeded, efficiencyPercent);
-            totalTime += subResult.totalTime;
-            totalXp += subResult.totalXp;
-            for(const m in subResult.rawMaterials) rawMaterials[m] = (rawMaterials[m]||0) + subResult.rawMaterials[m];
-            for(const s in subResult.subCrafts) subCrafts[s] = (subCrafts[s]||0) + subResult.subCrafts[s];
-          } else {
-            rawMaterials[reqName] = (rawMaterials[reqName]||0) + reqAmount * craftsNeeded;
+            } else {
+              // This is a raw material
+              rawMaterials[reqName] = (rawMaterials[reqName] || 0) + reqAmount * craftsNeeded;
+            }
           }
         }
-      }
-      return { rawMaterials, subCrafts, totalTime, totalXp };
+        return { rawMaterials, subCrafts, craftingTimes, totalTime, totalXp };
     }
+
 
     function calculate(){
       const currentXp = parseInt(document.getElementById('currentXp').value) || 0;
@@ -482,70 +504,50 @@
         return;
       }
 
-      const xpNeeded = targetXp - currentXp;
       const selectedItem = profItems.find(i => i.Name === itemName);
       if(!selectedItem){
         resultsSummary.textContent = 'Invalid item.';
         return;
       }
-
-      const singleDetail = calculateDetails(profKey, itemName, 1, efficiency);
-      if(singleDetail.totalXp <= 0){
+      
+      // Calculate the total XP for one full craft, including sub-items of the same profession
+      const detailsForOneCraft = calculateDetails(profKey, itemName, 1, efficiency);
+      const totalXpPerCraft = detailsForOneCraft.totalXp;
+      
+      if (totalXpPerCraft <= 0) {
         resultsSummary.textContent = 'XP per item is zero — check item data.';
         return;
       }
+      
+      const xpNeeded = targetXp - currentXp;
+      
+      // Calculate the number of crafts needed based on the total XP per craft
+      const craftsNeeded = Math.ceil(xpNeeded / totalXpPerCraft);
 
-      const craftsNeeded = Math.ceil(xpNeeded / singleDetail.totalXp);
+      // Now, use this number of crafts to calculate everything else
       const finalDetail = calculateDetails(profKey, itemName, craftsNeeded, efficiency);
 
-      const totalXpFinal = finalDetail.totalXp;
       const totalTimeFinal = finalDetail.totalTime;
       const finalRaw = finalDetail.rawMaterials;
       const finalSubs = finalDetail.subCrafts;
-      
+      const finalCraftingTimes = finalDetail.craftingTimes;
+
       const isMainItemCrafting = !gatheringProfessions.includes(profKey);
-      const mainItemTotalTime = singleDetail.totalTime * craftsNeeded;
 
-      let subItemsTimeHtml = '';
-      const sortedSubKeys = Object.keys(finalSubs).sort();
-      if(sortedSubKeys.length > 0) {
-        for (const subName of sortedSubKeys) {
-          const subProfKey = getItemProfession(subName);
-          if (subProfKey && !gatheringProfessions.includes(subProfKey)) {
-            let subItem = null;
-            for (const category in allData) {
-              if (typeof allData[category] === 'object' && !Array.isArray(allData[category])) {
-                if (allData[category][subProfKey]) {
-                  subItem = allData[category][subProfKey].find(i => i.Name === subName);
-                  break;
-                }
-              } else {
-                if (category === subProfKey) {
-                  subItem = allData[category].find(i => i.Name === subName);
-                  break;
-                }
-              }
-            }
-            if(subItem) {
-                const subBaseTime = parseTime(subItem['Base Time']);
-                const subEffectiveTime = subBaseTime * (1 - efficiency / 100);
-                const subCraftsNeeded = finalSubs[subName];
-                const subTotalTime = subEffectiveTime * subCraftsNeeded;
-                subItemsTimeHtml += `<p><strong>${subName}:</strong> ${formatTime(subTotalTime)}</p>`;
-            }
-          }
-        }
-      }
-
-      resultsSummary.innerHTML = `<strong>XP needed:</strong> ${formatNumber(xpNeeded)}<br><strong>Items required:</strong> ${formatNumber(craftsNeeded)} x ${itemName}<br><span class="small-muted">(each gives ${formatNumber(singleDetail.totalXp)} XP)</span>`;
+      resultsSummary.innerHTML = `<strong>XP needed:</strong> ${formatNumber(xpNeeded)}<br><strong>Items required:</strong> ${formatNumber(craftsNeeded)} x ${itemName}<br><span class="small-muted">(each gives ${formatNumber(totalXpPerCraft)} XP)</span>`;
       resultsMore.innerHTML = `<span class="small-muted">Estimated current level: ${getLevelFromXp(currentXp)} — Target level: ${targetLvl}</span>`;
 
       timeBlock.style.display = 'block';
       const timeBlockTitle = timeBlock.querySelector('h3');
       timeBlockTitle.textContent = isMainItemCrafting ? 'Crafting Time' : 'Gathering Time';
-      timeList.innerHTML = `<p><strong>${itemName}:</strong> ${formatTime(mainItemTotalTime)}</p>
-                            ${subItemsTimeHtml}
-                            <p><strong>Total estimated time:</strong> ${formatTime(totalTimeFinal)}</p>`;
+      
+      let timeItemsHtml = '';
+      const sortedTimeKeys = Object.keys(finalCraftingTimes).sort();
+      sortedTimeKeys.forEach(item => {
+          timeItemsHtml += `<p><strong>${item}:</strong> ${formatTime(finalCraftingTimes[item])}</p>`;
+      });
+      timeList.innerHTML = `${timeItemsHtml}<p><strong>Total estimated time:</strong> ${formatTime(totalTimeFinal)}</p>`;
+
 
       const subsKeys = Object.keys(finalSubs).sort();
       if(subsKeys.length){
